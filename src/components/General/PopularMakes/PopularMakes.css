@@ -1,0 +1,32 @@
+:root {
+  --primaryColor: #7a63f1;
+  --secondaryColor: #ebe8fc;
+  --textColor: #a3a3a3;
+  --greyColor: #f4f4f4;
+  --whiteColor: #f5f4fa;
+  --blackColor: #434344;
+}
+
+.popular-makes {
+  background: var(--greyColor);
+}
+.popular-makes .popular-makes-container {
+  margin: 2rem inherit;
+  flex-wrap: wrap;
+}
+.popular-makes .popular-makes-container .single-make {
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  background: rgb(230, 230, 230);
+  color: var(--blackColor);
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 4px 8px;
+  margin: 6px;
+  border-radius: 8px;
+}
+.popular-makes .popular-makes-container .single-make:hover {
+  background: var(--primaryColor);
+  color: var(--whiteColor);
+}/*# sourceMappingURL=PopularMakes.css.map */

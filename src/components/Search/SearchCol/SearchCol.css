@@ -1,0 +1,23 @@
+.car-search {
+  background: var(--greyColor);
+}
+.car-search .cars {
+  margin: 2rem inherit;
+  flex-wrap: wrap;
+}
+.car-search .cars .car {
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  background: rgb(230, 230, 230);
+  color: var(--blackColor);
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 4px 8px;
+  margin: 6px;
+  border-radius: 8px;
+}
+.car-search .cars .car:hover {
+  background: var(--primaryColor);
+  color: var(--whiteColor);
+}/*# sourceMappingURL=SearchCol.css.map */

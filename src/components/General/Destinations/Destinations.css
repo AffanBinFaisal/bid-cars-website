@@ -1,0 +1,40 @@
+:root {
+  --primaryColor: #7a63f1;
+  --secondaryColor: #ebe8fc;
+  --textColor: #a3a3a3;
+  --greyColor: #f4f4f4;
+  --whiteColor: #f5f4fa;
+  --blackColor: #434344;
+}
+
+.destinations {
+  border-top: 1px solid var(--blackColor);
+  background: var(--greyColor);
+}
+.destinations .destinations-container {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.destinations .destinations-container .single-destination {
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+  background: rgb(230, 230, 230);
+  color: var(--blackColor);
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+@media screen and (min-width: 768px) {
+  .destinations .destinations-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}/*# sourceMappingURL=Destinations.css.map */

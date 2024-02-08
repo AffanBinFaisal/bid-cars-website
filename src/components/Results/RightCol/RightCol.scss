@@ -1,0 +1,52 @@
+:root {
+  --primaryColor: #7a63f1;
+  --secondaryColor: #ebe8fc;
+  --textColor: #a3a3a3;
+  --greyColor: #f4f4f4;
+  --whiteColor: #f5f4fa;
+  --blackColor: #434344;
+}
+
+.prop {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.propTitle {
+  color: #a3a3a3;
+}
+
+.price1 {
+  width: 100%;
+  background: rgb(230, 230, 230);
+  color: var(--blackColor);
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.price2 {
+  width: 100%;
+  background: var(--primaryColor);
+  color: var(--whiteColor);
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.time {
+  width: 100%;
+  color: var(--primaryColor);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.homeImage {
+  margin: auto;
+}
+
+a {
+  &:hover {
+    text-decoration: underline;
+  }
+}

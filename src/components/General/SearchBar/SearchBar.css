@@ -1,0 +1,74 @@
+:root {
+  --primaryColor: #7a63f1;
+  --secondaryColor: #ebe8fc;
+  --textColor: #a3a3a3;
+  --greyColor: #f4f4f4;
+  --whiteColor: #f5f4fa;
+  --blackColor: #434344;
+}
+
+.search {
+  padding: 2rem 0;
+}
+.search .title {
+  color: var(--blackColor);
+  font-size: 22px;
+  padding: 1rem 0;
+  text-align: center;
+  font-weight: 700;
+  line-height: 1.7rem;
+}
+.search .searchDiv {
+  padding: 0 2rem;
+  gap: 2rem;
+  grid-template-columns: repeat(1, 1fr);
+  align-items: center;
+}
+.search .searchDiv .btn {
+  justify-content: center;
+  gap: 0.3rem;
+}
+.search .searchDiv .btn .icon {
+  font-size: 15px;
+}
+.search .searchDiv .btn span {
+  font-size: 15px;
+}
+@media screen and (min-width: 768px) {
+  .search .searchDiv {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 520px) {
+  .search .title {
+    font-size: 25px;
+    padding: 2rem 0;
+  }
+  .search .searchDiv .btn {
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 18px;
+  }
+  .search .searchDiv .btn .icon {
+    font-size: 18px;
+  }
+}
+@media screen and (min-width: 770px) {
+  .search .title {
+    font-size: 38px;
+    padding: 2rem 0;
+  }
+  .search .searchDiv {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media screen and (min-width: 1200px) {
+  .search {
+    margin: auto;
+  }
+  .search .searchDiv {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}/*# sourceMappingURL=SearchBar.css.map */
