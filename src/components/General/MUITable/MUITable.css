@@ -1,20 +1,24 @@
-.reports {
+.table-link {
   cursor: pointer;
-  font-size: 15px;
   font-weight: 500;
   background: rgb(230, 230, 230);
   color: var(--blackColor);
   width: -moz-fit-content;
   width: fit-content;
   padding: 4px 8px;
-  margin: 6px;
   border-radius: 8px;
 }
-.reports:hover {
+.table-link:hover {
   background: var(--primaryColor);
   color: var(--whiteColor);
 }
 
-.propTitle {
-  color: #a3a3a3;
-}/*# sourceMappingURL=Right.css.map */
+.money {
+  font-weight: 500;
+  background: var(--primaryColor);
+  color: var(--whiteColor);
+  width: -moz-fit-content;
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 8px;
+}/*# sourceMappingURL=MUITable.css.map */

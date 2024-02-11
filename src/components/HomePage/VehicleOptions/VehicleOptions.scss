@@ -11,7 +11,6 @@
   .secContainer {
     .secHeading {
       justify-content: space-between;
-      padding: 1rem 0;
 
       .see-all {
         cursor: pointer;
@@ -64,6 +63,7 @@
           color: var(--blackColor);
           opacity: 0.7;
           font-size: 14px;
+          text-align: left;
         }
 
         .price_seller {

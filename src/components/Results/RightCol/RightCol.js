@@ -243,9 +243,7 @@ const RightCol = () => {
             >
               <Box>
                 <div className="flex prop">
-                  <span className="propTitle text-nowrap text-nowrap">
-                    Number:{" "}
-                  </span>
+                  <span className="propTitle text-nowrap">Number:</span>
                   <span>0-37970128</span>
                 </div>
                 <div className="flex prop">

@@ -1,0 +1,23 @@
+.watchlistBtn {
+  border: none;
+  outline: none;
+  background: none;
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 12px;
+}
+.watchlistBtn:hover {
+  background: var(--secondaryColor);
+  color: var(--blackColor);
+}
+
+.activeBtn {
+  background-color: #7a63f1;
+  color: white;
+}
+
+.propTitle {
+  color: #a3a3a3;
+}/*# sourceMappingURL=Left.css.map */

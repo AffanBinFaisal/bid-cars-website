@@ -67,10 +67,6 @@ p {
   color: var(--blackColor);
 }
 
-.section {
-  padding: 4rem 0 2rem;
-}
-
 img {
   width: 100%;
   height: auto;
