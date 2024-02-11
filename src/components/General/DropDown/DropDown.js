@@ -5,12 +5,6 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
 export default function DropDown(props) {
-  const [age, setAge] = React.useState("");
-
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
-
   return (
     <div>
       <FormControl variant="standard" sx={{ width: "100%" }}>
@@ -20,14 +14,20 @@ export default function DropDown(props) {
         <Select
           labelId="demo-simple-select-standard-label"
           id="demo-simple-select-standard"
-          value={age}
-          onChange={handleChange}
-          label="Age"
+          value={props.value}
+          onChange={props.onChange}
+          name={props.name}
+          
         >
-          <MenuItem value="">
+          <MenuItem value="None">
             <em>None</em>
           </MenuItem>
-          <MenuItem value={10}>Ten</MenuItem>
+          {props.options && props.options.map(option => (
+            <MenuItem value={option}>
+              {option}
+            </MenuItem>
+          ))}
+          
         </Select>
       </FormControl>
     </div>
