@@ -99,7 +99,7 @@ const SearchBar = () => {
 
   const fetchMakes = async () => {
     try {
-      const response = await fetch("http://192.168.0.133:8001/cars/get-makes");
+      const response = await fetch("http://localhost:8001/cars/get-makes");
       const data = await response.json();
       setAllMakes(data.result);
     } catch (error) {
@@ -109,7 +109,7 @@ const SearchBar = () => {
 
   const fetchModels = async (id) => {
     try {
-      const response = await fetch(`http://192.168.0.133:8001/cars/get-model-by-make/${id}`);
+      const response = await fetch(`http://localhost:8001/cars/get-model-by-make/${id}`);
       const data = await response.json();
       const modelsList = data.result.slice(0, 10).map((model) => model.model)
       setModels(modelsList);

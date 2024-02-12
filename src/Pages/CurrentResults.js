@@ -31,19 +31,21 @@ const CurrentResults = () => {
 
   const location = useLocation();
 
-  const fetchCars = async () => {
-    const response = await axios.get('http://192.168.0.133:8001/cars', {
-      params: search,
+  useEffect(() => {
+    const search = location.state;
+    setSearch(search)
+    fetchCars(search);
+  }, [])
+
+  const fetchCars = async (params) => {
+    const response = await axios.get('http://localhost:8001/cars', {
+      params: params,
     });
     const data = response.data;
     console.log(data.result)
   }
 
-  useEffect(() => {
-    const search = location.state;
-    setSearch(search)
-    fetchCars();
-  }, [])
+  
 
   return (
     <div className="container">
