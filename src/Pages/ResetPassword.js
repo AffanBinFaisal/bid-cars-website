@@ -1,15 +1,47 @@
-import { Box } from "@mui/material";
+import { Alert, Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { HashLoader } from "react-spinners";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
+  const { token } = useParams();
+  // const navigate = useNavigate();
+  const [reset, setReset] = useState(false);
+  const [error, setError] = useState(false);
+  const [response, setResponse] = useState("");
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    resetPassword();
+  };
 
-  useEffect(() => {});
+  const resetPassword = async () => {
+    try {
+      const config = {
+        headers: { "content-type": "application/json" },
+      };
+      const response = await axios.post(
+        `http://localhost:8001/auth/reset-password/${token}`,
+        { newPassword: newPassword },
+        config
+      );
+      console.log(response.data);
+      if (response.status == 200) {
+        setReset(true);
+        setError(true);
+        setResponse(response.data.message);
+      }
+    } catch (error) {
+      setReset(false);
+      setError(true);
+    }
+  };
+
+  // if (reset) {
+  // navigate();
+  // }
 
   return (
     <Box
@@ -29,6 +61,16 @@ const ResetPassword = () => {
           gap: "3rem",
         }}
       >
+        {reset && (
+          <Alert variant="filled" severity="info">
+            {response}. Redirecting you to the login page.
+          </Alert>
+        )}
+        {error && (
+          <Alert variant="filled" severity="error">
+            Invalid token or user not found
+          </Alert>
+        )}
         <Box
           sx={{
             display: "flex",
@@ -37,7 +79,6 @@ const ResetPassword = () => {
             flexDirection: "column",
           }}
         >
-          <Box className="fs-1">Forgot Password</Box>
           <Box className="fs-3">Enter your new password below</Box>
         </Box>
 
@@ -48,6 +89,7 @@ const ResetPassword = () => {
             variant="filled"
             value={newPassword}
             onChange={(ev) => setNewPassword(ev.target.value)}
+            type="password"
           />
           <button
             className="btn primaryBtn fs-5"
