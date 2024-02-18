@@ -27,12 +27,20 @@ import Watchlist from "./pages/Watchlist";
 import WatchlistArchived from "./pages/WatchlistArchived";
 import Shipping from "./pages/Shipping";
 import EmailPassword from "./pages/EmailPassword";
-import Layout from "./Layout/Layout";
+import Layout from "./layout/Layout";
 import SingleCar from "./pages/SingleCar";
+import Verify from "./pages/Verify";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const App = () => {
   return (
     <Routes>
+      <Route path="login" element={<Login />} />
+      <Route path="signup" element={<SignUp />} />
+      <Route path="verify" element={<Verify />} />
+      <Route path="forgot-password" element={<ForgotPassword />} />
+      <Route path="reset-password/:token" element={<ResetPassword />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="about-us" element={<About />} />
@@ -41,14 +49,12 @@ const App = () => {
         <Route path="help" element={<Help />} />
         <Route path="status" element={<Status />} />
         <Route path="transports" element={<Transports />} />
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<SignUp />} />
         <Route path="search" element={<SearchCurrent />} />
         <Route path="search/results" element={<CurrentResults />} />
         <Route path="search/archived" element={<SearchArchived />} />
         <Route path="search/archived/results" element={<ArchivedResults />} />
         {/* yet to insert car param */}
-        <Route path="lot" element={<SingleCar />} />{" "}
+        <Route path="lot/:make/:model/:vin" element={<SingleCar />} />{" "}
         <Route path="user/increase-power" element={<BiddingPower />} />
         <Route path="user/deposit" element={<DepositRefund />} />
         <Route

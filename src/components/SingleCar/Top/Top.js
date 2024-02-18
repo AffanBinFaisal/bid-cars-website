@@ -3,8 +3,8 @@ import DashboardBox from "../../General/DashboardBox/DashboardBox";
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Link from "@mui/material/Link";
 
-const Top = () => {
-  return (
+const Top = (props) => {
+  return props.data.map((carInfo) => (
     <DashboardBox>
       <Breadcrumbs aria-label="breadcrumb" sx={{ color: "#7a63f1" }}>
         <Link underline="hover" color="inherit" href="/">
@@ -14,20 +14,17 @@ const Top = () => {
           Automobile
         </Link>
         <Link underline="hover" color="inherit" href="/">
-          Hyundai
+          {carInfo.make}
         </Link>
         <Link underline="hover" color="inherit" href="/">
-          Tucson
+          {carInfo.model}
         </Link>
         <Link underline="hover" color="inherit" href="/">
-          3rd Gen TL
-        </Link>
-        <Link underline="hover" color="inherit" href="/">
-          2020 Hyundai Tucson KM8J23A49LU169525
+          {carInfo.vin}
         </Link>
       </Breadcrumbs>
     </DashboardBox>
-  );
+  ));
 };
 
 export default Top;

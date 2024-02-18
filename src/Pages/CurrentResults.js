@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useLocation } from 'react-router-dom';
+import React, { useEffect } from "react";
+// import { useLocation } from "react-router-dom";
 import SearchBar from "../components/General/SearchBar/SearchBar";
 import { Box, useMediaQuery } from "@mui/material";
 import LeftCol from "../components/Results/LeftCol/LeftCol";
 import RightCol from "../components/Results/RightCol/RightCol";
-import axios from 'axios';
+// import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchResults } from "../redux/slice/resultsSlice";
 
 const gridTemplateLargeScreen = `
   "left right"
@@ -27,25 +29,30 @@ const CurrentResults = () => {
     gridTemplateColumns = "1fr 3fr";
   }
 
-  const [search, setSearch] = useState({});
+  // const [search, setSearch] = useState({});
+  // const [results, setResults] = useState([]);
 
-  const location = useLocation();
+  // const location = useLocation();
+  const search = useSelector((state) => state.search);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const search = location.state;
-    setSearch(search)
-    fetchCars(search);
-  }, [])
+    // const search = location.state;
+    // setSearch(search);
+    // fetchCars(search);
+    dispatch(fetchResults(search));
+  }, []);
 
-  const fetchCars = async (params) => {
-    const response = await axios.get('http://localhost:8001/cars', {
-      params: params,
-    });
-    const data = response.data;
-    console.log(data.result)
-  }
+  // const fetchCars = async (params) => {
+  //   const response = await axios.get("http://localhost:8001/cars", {
+  //     params: params,
+  //   });
+  //   const data = response.data;
+  //   setResults(data.result);
+  //   console.log(data.result);
+  // };
 
-  
+  // console.log(data);
 
   return (
     <div className="container">

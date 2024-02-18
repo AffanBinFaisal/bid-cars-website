@@ -1,3 +1,5 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable jsx-a11y/img-redundant-alt */
 import React, { useEffect } from "react";
 import DashboardBox from "../../General/DashboardBox/DashboardBox";
 import { Box, useMediaQuery } from "@mui/material";
@@ -6,6 +8,9 @@ import { useState } from "react";
 import Carousel from "react-bootstrap/Carousel";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import "./RightCol.css";
+import { useDispatch, useSelector } from "react-redux";
+import { resultsChanged } from "../../../redux/slice/resultsSlice";
+import { Link } from "react-router-dom";
 
 const gridTemplateLargeScreen = `
   "left mid right"
@@ -18,6 +23,15 @@ const gridTemplateSmallScreen = `
 const midSectionTemplateLargeScreen = `
   "left right"
 `;
+
+// function capitalizeFirstLetterOfEachWord(str) {
+//   const words = str.split(" ");
+//   for (let i = 0; i < words.length; i++) {
+//     words[i] =
+//       words[i].charAt(0).toUpperCase() + words[i].slice(1).toLowerCase();
+//   }
+//   return words.join(" ");
+// }
 
 const RightCol = () => {
   const isBelowMediumScreen = useMediaQuery("(max-width: 1199px)");
@@ -39,11 +53,25 @@ const RightCol = () => {
     midTemplateColumns = "1fr 1fr";
   }
 
+  const { loading, data, error } = useSelector((state) => state.results);
+
   const [index, setIndex] = useState(0);
+  const dispatch = useDispatch();
 
   const handleSelect = (selectedIndex) => {
     setIndex(selectedIndex);
   };
+
+  useEffect(() => {
+    // const search = location.state;
+    // setSearch(search);
+    // fetchCars(search);
+    if (!loading && !error && data) {
+      const payload = data;
+      dispatch(resultsChanged(payload));
+    }
+  }, [dispatch, loading, data, error]);
+
   return (
     <div
       style={{
@@ -67,352 +95,158 @@ const RightCol = () => {
           </span> */}
         </Box>
       </DashboardBox>
-      <DashboardBox>
-        <Box
-          height="auto"
-          width="100%"
-          display="grid"
-          gap="1rem"
-          sx={{
-            gridTemplateAreas: gridTemplateAreas,
-            gridTemplateColumns: gridTemplateColumns,
-          }}
-          className="filters"
-        >
-          <Box height="100%">
-            <Carousel
-              activeIndex={index}
-              onSelect={handleSelect}
-              style={{
-                height: "100%",
-                width: "100%",
+
+      {loading && <DashboardBox>Loading...</DashboardBox>}
+      {data &&
+        data.map((result) => (
+          <DashboardBox>
+            <Box
+              height="auto"
+              width="100%"
+              display="grid"
+              gap="1rem"
+              sx={{
+                gridTemplateAreas: gridTemplateAreas,
+                gridTemplateColumns: gridTemplateColumns,
               }}
+              className="filters"
             >
-              <Carousel.Item>
-                <img
-                  src="../../../logo.svg"
-                  alt="First Slide"
-                  className="homeImage"
-                />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img src="../../../hero.png" alt="First Slide" />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img src="../../../hero.png" alt="First Slide" />
-              </Carousel.Item>
-            </Carousel>
-          </Box>
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box paddingBottom=".5rem">
-              <a
-                href="/"
-                className="fs-4"
-                style={{
-                  color: "#7a63f1",
-                  fontWeight: "bold",
+              <Box height="100%">
+                <Carousel
+                  activeIndex={index}
+                  onSelect={handleSelect}
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                  }}
+                >
+                  {result.car_photo.photo.map((singlePhoto) => (
+                    <Carousel.Item>
+                      <img
+                        src={singlePhoto}
+                        alt="Car Image"
+                        className="homeImage"
+                      />
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
+              </Box>
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <Box paddingBottom=".5rem">
+                  <Link
+                    to={`/lot/${result.make}/${result.model}/${result.vin}`}
+                    className="fs-4 hover"
+                    style={{
+                      color: "#7a63f1",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {result.year} {result.make} {result.model}
+                  </Link>
+                </Box>
+
+                <Box
+                  display="grid"
+                  columnGap="1rem"
+                  sx={{
+                    gridTemplateAreas: midTemplateAreas,
+                    gridTemplateColumns: midTemplateColumns,
+                  }}
+                >
+                  <Box>
+                    <div className="flex prop">
+                      <span className="propTitle text-nowrap">Number: </span>
+                      <span>
+                        {result.lot_number == ""
+                          ? "--"
+                          : `0-${result.lot_number}`}
+                      </span>
+                    </div>
+                    <div className="flex prop">
+                      <span className="propTitle text-nowrap">VIN: </span>
+                      <span>{result.vin == "" ? "--" : `${result.vin}`}</span>
+                    </div>
+                    <div className="flex prop">
+                      <span className="propTitle text-nowrap">Milage: </span>
+                      <span>
+                        {result.odometer == ""
+                          ? "--"
+                          : `${result.odometer} miles (${Math.round(
+                              result.odometer * 1.60934
+                            )} kms)`}
+                      </span>
+                    </div>
+                    <div className="flex prop">
+                      <span className="propTitle text-nowrap">Location: </span>
+                      <span>
+                        {result.location == "" ? "--" : `${result.location}`}
+                      </span>
+                    </div>
+                  </Box>
+                  <Box>
+                    <div className="flex prop">
+                      <span className="propTitle text-nowrap">Seller: </span>
+                      <span>
+                        {result.seller == "" ? "--" : `${result.seller}`}
+                      </span>
+                    </div>
+                    <div className="flex prop">
+                      <span className="propTitle text-nowrap">Sale doc.: </span>
+                      <span>
+                        {result.doc_type == "" ? "--" : `${result.doc_type}`}
+                      </span>
+                    </div>
+                    <div className="flex prop">
+                      <span className="propTitle text-nowrap">Damage: </span>
+                      <span>
+                        {result.primary_damage == ""
+                          ? "--"
+                          : `${result.primary_damage}`}{" "}
+                        |{" "}
+                        {result.secondary_damage == ""
+                          ? "--"
+                          : `${result.secondary_damage}`}
+                      </span>
+                    </div>
+                    <div className="flex prop">
+                      <span className="propTitle text-nowrap">Status: </span>
+                      <span style={{ fontWeight: "bold" }}>
+                        {result.highlights == ""
+                          ? "--"
+                          : `${result.highlights}`}
+                      </span>
+                    </div>
+                  </Box>
+                </Box>
+              </Box>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                  alignItems: "center",
                 }}
               >
-                2020 Mazda 6, Sport
-              </a>
-            </Box>
+                <div className="time">
+                  <CalendarTodayIcon /> Fri 9 Feb, 19:30 GMT+5
+                </div>
+                {result.active_bidding[0].current_bid && (
+                  <div className="price1">
+                    Current Bid ${result.active_bidding[0].current_bid}
+                  </div>
+                )}
 
-            <Box
-              display="grid"
-              columnGap="1rem"
-              sx={{
-                gridTemplateAreas: midTemplateAreas,
-                gridTemplateColumns: midTemplateColumns,
-              }}
-            >
-              <Box>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap text-nowrap">
-                    Number:{" "}
-                  </span>
-                  <span>0-37970128</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">VIN: </span>
-                  <span>JM1GL1UM4L1517115</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Milage: </span>
-                  <span>0k miles (0k km)</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Location: </span>
-                  <span>Bridgeport (PA)</span>
-                </div>
-              </Box>
-              <Box>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Seller: </span>
-                  <span>Usaa Guidewire</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Sale doc.: </span>
-                  <span>Salvage (Delaware)</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Damage: </span>
-                  <span>Other | All over</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Status: </span>
-                  <span style={{ fontWeight: "bold" }}>Stationary</span>
-                </div>
+                {result.buy_now_car && (
+                  <div className="price2">
+                    Buy Now ${result.buy_now_car.purchase_price}
+                  </div>
+                )}
+                <div className="time">Fri 9 Feb, 19:30 GMT+5</div>
               </Box>
             </Box>
-          </Box>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "1rem",
-              alignItems: "center",
-            }}
-          >
-            <div className="time">
-              <CalendarTodayIcon /> Fri 9 Feb, 19:30 GMT+5
-            </div>
-            <div className="price1">$175</div>
-            <div className="price2">Buy Now $15000</div>
-            <div className="time">Fri 9 Feb, 19:30 GMT+5</div>
-          </Box>
-        </Box>
-      </DashboardBox>
-      <DashboardBox>
-        <Box
-          height="auto"
-          width="100%"
-          display="grid"
-          gap="1rem"
-          sx={{
-            gridTemplateAreas: gridTemplateAreas,
-            gridTemplateColumns: gridTemplateColumns,
-          }}
-          className="filters"
-        >
-          <Box height="100%">
-            <Carousel
-              activeIndex={index}
-              onSelect={handleSelect}
-              style={{
-                height: "100%",
-                width: "100%",
-              }}
-            >
-              <Carousel.Item>
-                <img
-                  src="../../../logo.svg"
-                  alt="First Slide"
-                  className="homeImage"
-                />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img src="../../../hero.png" alt="First Slide" />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img src="../../../hero.png" alt="First Slide" />
-              </Carousel.Item>
-            </Carousel>
-          </Box>
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box paddingBottom=".5rem">
-              <a
-                href="/"
-                className="fs-4"
-                style={{
-                  color: "#7a63f1",
-                  fontWeight: "bold",
-                }}
-              >
-                2020 Mazda 6, Sport
-              </a>
-            </Box>
-
-            <Box
-              display="grid"
-              columnGap="1rem"
-              sx={{
-                gridTemplateAreas: midTemplateAreas,
-                gridTemplateColumns: midTemplateColumns,
-              }}
-            >
-              <Box>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Number:</span>
-                  <span>0-37970128</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">VIN: </span>
-                  <span>JM1GL1UM4L1517115</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Milage: </span>
-                  <span>0k miles (0k km)</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Location: </span>
-                  <span>Bridgeport (PA)</span>
-                </div>
-              </Box>
-              <Box>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Seller: </span>
-                  <span>Usaa Guidewire</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Sale doc.: </span>
-                  <span>Salvage (Delaware)</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Damage: </span>
-                  <span>Other | All over</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Status: </span>
-                  <span style={{ fontWeight: "bold" }}>Stationary</span>
-                </div>
-              </Box>
-            </Box>
-          </Box>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "1rem",
-              alignItems: "center",
-            }}
-          >
-            <div className="time">
-              <CalendarTodayIcon /> Fri 9 Feb, 19:30 GMT+5
-            </div>
-            <div className="price1">$175</div>
-            <div className="price2">Buy Now $15000</div>
-            <div className="time">Fri 9 Feb, 19:30 GMT+5</div>
-          </Box>
-        </Box>
-      </DashboardBox>
-      <DashboardBox>
-        <Box
-          height="auto"
-          width="100%"
-          display="grid"
-          gap="1rem"
-          sx={{
-            gridTemplateAreas: gridTemplateAreas,
-            gridTemplateColumns: gridTemplateColumns,
-          }}
-          className="filters"
-        >
-          <Box height="100%">
-            <Carousel
-              activeIndex={index}
-              onSelect={handleSelect}
-              style={{
-                height: "100%",
-                width: "100%",
-              }}
-            >
-              <Carousel.Item>
-                <img
-                  src="../../../logo.svg"
-                  alt="First Slide"
-                  className="homeImage"
-                />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img src="../../../hero.png" alt="First Slide" />
-              </Carousel.Item>
-              <Carousel.Item>
-                <img src="../../../hero.png" alt="First Slide" />
-              </Carousel.Item>
-            </Carousel>
-          </Box>
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Box paddingBottom=".5rem">
-              <a
-                href="/"
-                className="fs-4"
-                style={{
-                  color: "#7a63f1",
-                  fontWeight: "bold",
-                }}
-              >
-                2020 Mazda 6, Sport
-              </a>
-            </Box>
-
-            <Box
-              display="grid"
-              columnGap="1rem"
-              sx={{
-                gridTemplateAreas: midTemplateAreas,
-                gridTemplateColumns: midTemplateColumns,
-              }}
-            >
-              <Box>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap text-nowrap">
-                    Number:{" "}
-                  </span>
-                  <span>0-37970128</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">VIN: </span>
-                  <span>JM1GL1UM4L1517115</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Milage: </span>
-                  <span>0k miles (0k km)</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Location: </span>
-                  <span>Bridgeport (PA)</span>
-                </div>
-              </Box>
-              <Box>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Seller: </span>
-                  <span>Usaa Guidewire</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Sale doc.: </span>
-                  <span>Salvage (Delaware)</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Damage: </span>
-                  <span>Other | All over</span>
-                </div>
-                <div className="flex prop">
-                  <span className="propTitle text-nowrap">Status: </span>
-                  <span style={{ fontWeight: "bold" }}>Stationary</span>
-                </div>
-              </Box>
-            </Box>
-          </Box>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "1rem",
-              alignItems: "center",
-            }}
-          >
-            <div className="time">
-              <CalendarTodayIcon /> Fri 9 Feb, 19:30 GMT+5
-            </div>
-            <div className="price1">$175</div>
-            <div className="price2">Buy Now $15000</div>
-            <div className="time">Fri 9 Feb, 19:30 GMT+5</div>
-          </Box>
-        </Box>
-      </DashboardBox>
+          </DashboardBox>
+        ))}
     </div>
   );
 };
