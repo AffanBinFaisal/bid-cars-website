@@ -23,7 +23,8 @@ const resultsSlice = createSlice({
   initialState,
   reducers: {
     resultsChanged: (state, action) => {
-      return { ...state, ...action.payload };
+      state.data = action.payload;
+      // return { ...state, ...action.payload };
     },
   },
   extraReducers: (builder) => {
@@ -46,6 +47,6 @@ const resultsSlice = createSlice({
   },
 });
 
-export const { resultsChanged } = resultsSlice.actions;
+export const { resultsChanged, odometerChanged } = resultsSlice.actions;
 
 export default resultsSlice.reducer;

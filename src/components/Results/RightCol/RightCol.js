@@ -1,11 +1,11 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable jsx-a11y/img-redundant-alt */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardBox from "../../General/DashboardBox/DashboardBox";
 import { Box, useMediaQuery } from "@mui/material";
 // import DropDown from "../../General/DropDown/DropDown";
-import { useState } from "react";
-import Carousel from "react-bootstrap/Carousel";
+// import Carousel from "react-bootstrap/Carousel";
+import Carousel from "react-material-ui-carousel";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import "./RightCol.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,7 +35,8 @@ const midSectionTemplateLargeScreen = `
 
 const RightCol = () => {
   const isBelowMediumScreen = useMediaQuery("(max-width: 1199px)");
-
+  const filters = useSelector((state) => state.filters);
+  const [filteredCars, setFilteredCars] = useState(null);
   let gridTemplateAreas,
     gridTemplateColumns,
     midTemplateAreas,
@@ -69,8 +70,23 @@ const RightCol = () => {
     if (!loading && !error && data) {
       const payload = data;
       dispatch(resultsChanged(payload));
+      setFilteredCars(payload);
     }
   }, [dispatch, loading, data, error]);
+
+  useEffect(() => {
+    console.log("Filters changed");
+    if (data) {
+      console.log(filters.filters.minValue, filters.filters.maxValue);
+      const filteredData = data.filter(
+        (_data) =>
+          _data.odometer >= filters.filters.minValue &&
+          _data.odometer <= filters.filters.maxValue
+      );
+
+      setFilteredCars(filteredData);
+    }
+  }, [dispatch, filters]);
 
   return (
     <div
@@ -97,8 +113,8 @@ const RightCol = () => {
       </DashboardBox>
 
       {loading && <DashboardBox>Loading...</DashboardBox>}
-      {data &&
-        data.map((result) => (
+      {filteredCars &&
+        filteredCars.map((result) => (
           <DashboardBox>
             <Box
               height="auto"
@@ -112,7 +128,7 @@ const RightCol = () => {
               className="filters"
             >
               <Box height="100%">
-                <Carousel
+                {/* <Carousel
                   activeIndex={index}
                   onSelect={handleSelect}
                   style={{
@@ -128,6 +144,11 @@ const RightCol = () => {
                         className="homeImage"
                       />
                     </Carousel.Item>
+                  ))}
+                </Carousel> */}
+                <Carousel>
+                  {result.car_photo.photo.map((singlePhoto, i) => (
+                    <img src={singlePhoto} alt="Car" />
                   ))}
                 </Carousel>
               </Box>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardBox from "../../General/DashboardBox/DashboardBox";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -14,6 +14,8 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
+import { useDispatch } from "react-redux";
+import { filtersChanged } from "../../../redux/slice/filtersSlice";
 
 const cars = [
   "Supra",
@@ -34,26 +36,68 @@ function valuetext(value) {
 }
 
 const LeftCol = () => {
-  const [value, setValue] = useState([0, 250000]);
-  const [minValue, setMinValue] = useState(0);
-  const [maxValue, setMaxValue] = useState(250000);
+  // const [value, setValue] = useState([0, 250000]);
+  // const [minValue, setMinValue] = useState(0);
+  // const [maxValue, setMaxValue] = useState(250000);
 
-  const handleChangeSlider = (event, newValue) => {
-    setValue(newValue);
-    setMinValue(newValue[0]);
-    setMaxValue(newValue[1]);
-  };
+  const [odometer, setOdometer] = useState({
+    slider: [0, 250000],
+    minValue: 0,
+    maxValue: 250000,
+  });
+  const dispatch = useDispatch();
 
-  const handleChangeInput = (event) => {
-    const { id, value } = event.target;
-    if (id === "minInput") {
-      setMinValue(value);
-      setValue([parseInt(value), maxValue]);
-    } else if (id === "maxInput") {
-      setMaxValue(value);
-      setValue([minValue, parseInt(value)]);
+  // const handleChange = () => {};
+  // const handleChangeSlider = (event, newValue) => {
+  //   setValue(newValue);
+  //   setMinValue(newValue[0]);
+  //   setMaxValue(newValue[1]);
+  // };
+
+  // const handleChangeInput = (event) => {
+  //   const { id, value } = event.target;
+  //   if (id === "minInput") {
+  //     setMinValue(value);
+  //     setValue([parseInt(value), maxValue]);
+  //   } else if (id === "maxInput") {
+  //     setMaxValue(value);
+  //     setValue([minValue, parseInt(value)]);
+  //   }
+  // };
+
+  const handleChange = (event, newValue) => {
+    const isSliderChange = typeof newValue !== "undefined";
+
+    if (isSliderChange) {
+      const [minValue, maxValue] = newValue;
+      setOdometer({
+        ...odometer,
+        slider: [minValue, maxValue],
+        minValue,
+        maxValue,
+      });
+    } else {
+      const { id, value } = event.target;
+      const numericValue = parseInt(value);
+
+      let updatedSlider = [...odometer.slider];
+      if (id === "minInput") {
+        updatedSlider[0] = numericValue;
+      } else {
+        updatedSlider[1] = numericValue;
+      }
+
+      setOdometer({
+        ...odometer,
+        slider: updatedSlider,
+        [id === "minInput" ? "minValue" : "maxValue"]: numericValue,
+      });
     }
   };
+
+  useEffect(() => {
+    dispatch(filtersChanged(odometer));
+  }, [dispatch, odometer]);
 
   return (
     <div
@@ -91,8 +135,8 @@ const LeftCol = () => {
             <div className="slider" style={{ padding: "1rem 1rem" }}>
               <Slider
                 getAriaLabel={() => "Temperature range"}
-                value={value}
-                onChange={handleChangeSlider}
+                value={odometer.slider}
+                onChange={handleChange}
                 valueLabelDisplay="auto"
                 getAriaValueText={valuetext}
                 min={0}
@@ -117,8 +161,8 @@ const LeftCol = () => {
                 variant="standard"
                 className="col-5"
                 size="small"
-                value={minValue}
-                onChange={handleChangeInput}
+                value={odometer.minValue}
+                onChange={handleChange}
               />
               <TextField
                 id="maxInput"
@@ -126,8 +170,8 @@ const LeftCol = () => {
                 variant="standard"
                 className="col-5"
                 size="small"
-                value={maxValue}
-                onChange={handleChangeInput}
+                value={odometer.maxValue}
+                onChange={handleChange}
               />
             </Box>
 
