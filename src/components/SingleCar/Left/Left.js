@@ -57,11 +57,7 @@ const Left = (props) => {
                   }}
                 >
                   <span className="propTitle">Primary damage</span>
-                  <span>
-                    {carInfo.primary_damage.trim() == ""
-                      ? "-"
-                      : `${carInfo.primary_damage}`}
-                  </span>
+                  <span>{carInfo.primary_damage}</span>
                 </Box>
                 <hr />
                 <Box
@@ -72,11 +68,7 @@ const Left = (props) => {
                   }}
                 >
                   <span className="propTitle">Secondary damage</span>
-                  <span>
-                    {carInfo.secondary_damage.trim() == ""
-                      ? "-"
-                      : `${carInfo.secondary_damage}`}
-                  </span>
+                  <span>{carInfo.secondary_damage}</span>
                 </Box>
                 <hr />
                 <Box
@@ -102,11 +94,7 @@ const Left = (props) => {
                   }}
                 >
                   <span className="propTitle">Start code</span>
-                  <span>
-                    {carInfo.highlights.trim() == ""
-                      ? "-"
-                      : `${carInfo.highlights}`}
-                  </span>
+                  <span>{carInfo.highlights}</span>
                 </Box>
                 <hr />
                 <Box
