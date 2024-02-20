@@ -19,7 +19,7 @@ const SignUp = () => {
   const handleRegister = () => {
     console.log(userData);
     dispatch(registerUser(userData));
-    navigate("/");
+    navigate("/verify");
   };
 
   useEffect(() => {
