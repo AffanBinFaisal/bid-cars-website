@@ -6,6 +6,8 @@ import Below from "../components/SingleCar/Below/Below";
 import Left from "../components/SingleCar/Left/Left";
 import Right from "../components/SingleCar/Right/Right";
 import { useParams } from "react-router";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const lowerBoxGridTemplateSmallScreen = `
     "main"
@@ -15,7 +17,10 @@ const lowerBoxGridTemplateLargeScreen = `
     "left right"
 `;
 
+
+
 const SingleCar = () => {
+  const userInfo = useSelector((state) => state.login);
   const isBelowMediumScreen = useMediaQuery("(max-width: 991px)");
 
   let gridTemplateAreas, gridTemplateColumns;
@@ -47,7 +52,29 @@ const SingleCar = () => {
     fetchData();
   }, []);
 
-  console.log(data);
+  const buyNow = async () => {
+    console.log(data[2].buy_now_car.purchase_price,); 
+    try {
+      const config = {
+        headers: {
+          "content-type": "application/json",
+          Authorization: userInfo.user.token,
+        },
+      };
+      const response = await axios.post(
+        "http://localhost:8001/purchase/buy-now",
+        {
+          amount: data[2].buy_now_car.purchase_price,
+          vehicle: vin,
+        },
+        config
+      );
+
+      console.log(response);
+    } catch (error) {
+      console.error("Error fetching makes:", error);
+    }
+  };
 
   return (
     <div className="container">
@@ -75,6 +102,7 @@ const SingleCar = () => {
           <Right data={data} />
         </Box>
       </Box>
+      <button onClick={buyNow}>Buy Now</button>
     </div>
   );
 };

@@ -46,7 +46,7 @@ const Navbar = () => {
         <ul className="menu">
           <li onClick={removeNavbar} className="listItem">
             <a href="/search" className="link">
-              Seacrh
+              Search
             </a>
           </li>
           <li onClick={removeNavbar} className="listItem">

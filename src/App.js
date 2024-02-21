@@ -27,7 +27,7 @@ import Watchlist from "./pages/Watchlist";
 import WatchlistArchived from "./pages/WatchlistArchived";
 import Shipping from "./pages/Shipping";
 import EmailPassword from "./pages/EmailPassword";
-import Layout from "./layout/Layout";
+import Layout from "./Layout/Layout";
 import SingleCar from "./pages/SingleCar";
 import Verify from "./pages/Verify";
 import ForgotPassword from "./pages/ForgotPassword";

@@ -59,7 +59,7 @@ const Below = (props) => {
                     borderRadius: "10px",
                   }}
                 >
-                  Current Bid: ${carInfo.active_bidding[0].current_bid}
+                  Current Bid: ${carInfo.active_bidding[0] ? carInfo.active_bidding[0].current_bid : null}
                 </span>
               </Box>
             </Box>
