@@ -79,6 +79,20 @@ const Navbar = () => {
               Contact
             </a>
           </li>
+          {isAuthenticated && (
+            <>
+              <li onClick={removeNavbar} className="listItem">
+                <a href="/deposit" className="link">
+                  Deposit
+                </a>
+              </li>
+              <li onClick={removeNavbar} className="listItem">
+                <a href="/withdraw" className="link">
+                  Withdraw
+                </a>
+              </li>
+            </>
+          )}
         </ul>
 
         <IoIosCloseCircle className="icon closeIcon" onClick={removeNavbar} />

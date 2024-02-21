@@ -39,6 +39,27 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+.search .vinDiv {
+  padding: 0 2rem;
+  gap: 2rem;
+  grid-template-columns: repeat(1, 1fr);
+  align-items: center;
+}
+.search .vinDiv .btn {
+  justify-content: center;
+  gap: 0.3rem;
+}
+.search .vinDiv .btn .icon {
+  font-size: 15px;
+}
+.search .vinDiv .btn span {
+  font-size: 15px;
+}
+@media screen and (min-width: 768px) {
+  .search .vinDiv {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
 
 @media screen and (min-width: 520px) {
   .search .title {
@@ -54,6 +75,15 @@
   .search .searchDiv .btn .icon {
     font-size: 18px;
   }
+  .search .vinDiv .btn {
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 18px;
+  }
+  .search .vinDiv .btn .icon {
+    font-size: 18px;
+  }
 }
 @media screen and (min-width: 770px) {
   .search .title {
@@ -63,6 +93,9 @@
   .search .searchDiv {
     grid-template-columns: repeat(3, 1fr);
   }
+  .search .vinDiv {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 @media screen and (min-width: 1200px) {
   .search {
@@ -70,5 +103,8 @@
   }
   .search .searchDiv {
     grid-template-columns: repeat(6, 1fr);
+  }
+  .search .vinDiv {
+    grid-template-columns: repeat(2, 1fr);
   }
 }/*# sourceMappingURL=SearchBar.css.map */

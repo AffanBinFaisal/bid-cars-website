@@ -52,7 +52,7 @@ export const registerSlice = createSlice({
     builder.addCase(registerUser.fulfilled, (state, action) => {
       console.log(action.payload);
       state.loading = false;
-      state.user = action.payload.data;
+      state.user = action.payload;
       state.isAuthenticated = true;
       state.error = "";
       // Update localStorage on the client-side

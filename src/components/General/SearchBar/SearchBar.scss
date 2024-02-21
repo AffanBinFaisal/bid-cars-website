@@ -42,6 +42,30 @@
       grid-template-columns: repeat(2, 1fr);
     }
   }
+
+  .vinDiv {
+    padding: 0 2rem;
+    gap: 2rem;
+    grid-template-columns: repeat(1, 1fr);
+    align-items: center;
+
+    .btn {
+      justify-content: center;
+      gap: 0.3rem;
+
+      .icon {
+        font-size: 15px;
+      }
+
+      span {
+        font-size: 15px;
+      }
+    }
+
+    @media screen and (min-width: 768px) {
+      grid-template-columns: repeat(1, 1fr);
+    }
+  }
 }
 
 @media screen and (min-width: 520px) {
@@ -52,6 +76,19 @@
     }
 
     .searchDiv {
+      .btn {
+        justify-content: center;
+        align-items: center;
+        gap: 0.3rem;
+        font-size: 18px;
+
+        .icon {
+          font-size: 18px;
+        }
+      }
+    }
+
+    .vinDiv {
       .btn {
         justify-content: center;
         align-items: center;
@@ -76,6 +113,10 @@
     .searchDiv {
       grid-template-columns: repeat(3, 1fr);
     }
+
+    .vinDiv {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 }
 
@@ -85,6 +126,10 @@
 
     .searchDiv {
       grid-template-columns: repeat(6, 1fr);
+    }
+
+    .vinDiv {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 }

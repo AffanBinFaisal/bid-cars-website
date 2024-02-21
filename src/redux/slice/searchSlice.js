@@ -20,7 +20,7 @@ export const fetchModels = createAsyncThunk(
 );
 
 const initialState = {
-  type: "",
+  auctionName: "",
   yearFrom: "",
   yearTo: "",
   make: "",
@@ -35,6 +35,14 @@ const searchSlice = createSlice({
     searchChanged: (state, action) => {
       return { ...state, ...action.payload };
     },
+    emptySearch: (state) => {
+      state.auctionName = "";
+      state.yearFrom = "";
+      state.yearTo = "";
+      state.make = "";
+      state.model = "";
+      state.models = [];
+    },
   },
   extraReducers: (builder) => {
     // Add an extra reducer to handle fetching models
@@ -44,6 +52,6 @@ const searchSlice = createSlice({
   },
 });
 
-export const { searchChanged } = searchSlice.actions;
+export const { searchChanged, emptySearch } = searchSlice.actions;
 
 export default searchSlice.reducer;

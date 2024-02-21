@@ -3,17 +3,25 @@ import React, { useEffect, useState } from "react";
 import "./SearchBar.css";
 import DropDown from "../DropDown/DropDown";
 import { AiOutlineSearch } from "react-icons/ai";
+import Switch from "@mui/material/Switch";
 import Aos from "aos";
 import "aos/dist/aos.css";
 
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
-import { fetchModels, searchChanged } from "../../../redux/slice/searchSlice";
+import {
+  fetchModels,
+  searchChanged,
+  emptySearch,
+} from "../../../redux/slice/searchSlice";
 import { fetchResults } from "../../../redux/slice/resultsSlice";
+import { Box, TextField } from "@mui/material";
 
 const SearchBar = () => {
-  const search = useSelector((state) => state.search);
+  const { auctionName, yearFrom, yearTo, make, model } = useSelector(
+    (state) => state.search
+  );
   const models = useSelector((state) => state.search.models);
   const dispatch = useDispatch();
   // const [search, setSearch] = React.useState({
@@ -25,7 +33,6 @@ const SearchBar = () => {
   // });
 
   const carMakes = [
-    "All makes",
     "Acura",
     "Alfa Romeo",
     "American Motors",
@@ -97,23 +104,25 @@ const SearchBar = () => {
     "Other",
   ];
 
-  const vehicleTypes = [
-    "Automobile",
-    "Motorcycle",
-    "ATV",
-    "Personal Watercraft",
-    "Snowmobile",
-    "Boat",
-    "Trailer",
-    "Travel Trailer",
-    "Motor Home",
-    "Emergency Equipment",
-    "Heavy Equipment",
-    "Farm Equipment",
-    "Forestry Equipment",
-    "Bus",
-    "Truck",
-  ];
+  // const vehicleTypes = [
+  //   "Automobile",
+  //   "Motorcycle",
+  //   "ATV",
+  //   "Personal Watercraft",
+  //   "Snowmobile",
+  //   "Boat",
+  //   "Trailer",
+  //   "Travel Trailer",
+  //   "Motor Home",
+  //   "Emergency Equipment",
+  //   "Heavy Equipment",
+  //   "Farm Equipment",
+  //   "Forestry Equipment",
+  //   "Bus",
+  //   "Truck",
+  // ];
+
+  const auctionNames = ["IAAI", "Copart"];
 
   const years = [];
   for (let year = 1950; year <= 2025; year++) {
@@ -122,6 +131,8 @@ const SearchBar = () => {
 
   const [makes, setMakes] = useState(carMakes);
   const [allMakes, setAllMakes] = useState(carMakes);
+  const [vinNumber, setVinNumber] = useState("");
+  const [searchByVinNumber, setSearchByVinNumber] = useState(false);
   // const [models, setModels] = useState([]);
   const navigate = useNavigate();
 
@@ -135,17 +146,17 @@ const SearchBar = () => {
     }
   };
 
-  const fetchVehicleTypes = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:8001/cars/get-vehicles-type"
-      );
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.error("Error fetching makes:", error);
-    }
-  };
+  // const fetchVehicleTypes = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       "http://localhost:8001/cars/get-vehicles-type"
+  //     );
+  //     const data = await response.json();
+  //     console.log(data);
+  //   } catch (error) {
+  //     console.error("Error fetching makes:", error);
+  //   }
+  // };
 
   // const fetchModels = async (id) => {
   //   try {
@@ -165,7 +176,7 @@ const SearchBar = () => {
       duration: 2000,
     });
     fetchMakes();
-    fetchVehicleTypes();
+    // fetchVehicleTypes();
   }, []);
 
   const handleChange = (event) => {
@@ -191,9 +202,20 @@ const SearchBar = () => {
     }
   };
 
+  console.log({ auctionName, yearFrom, yearTo, make, model });
+
+  const handleSwitchChange = (event) => {
+    setSearchByVinNumber(event.target.checked);
+  };
+
+  const handleVinSearch = () => {
+    navigate(`/lot/${vinNumber}`);
+    dispatch(emptySearch());
+  };
+
   const navigateToResults = () => {
     // navigate("/search/results", { state: search });
-    dispatch(fetchResults(search));
+    dispatch(fetchResults({ auctionName, yearFrom, yearTo, make, model }));
     navigate("/search/results");
   };
 
@@ -204,52 +226,90 @@ const SearchBar = () => {
           Which vehicle are you looking for?
         </h3>
 
-        <div className="searchDiv grid">
-          <DropDown
-            className="input"
-            placeholder="Type"
-            onChange={handleChange}
-            value={search.type}
-            name="type"
-            options={vehicleTypes}
+        <Box alignItems="center" data-aos="fade-up">
+          <span>Search by Features</span>
+          <Switch
+            checked={searchByVinNumber}
+            onChange={handleSwitchChange}
+            inputProps={{ "aria-label": "search by features switch" }}
+            color="default"
+            sx={{
+              "& .MuiSwitch-thumb": {
+                color: "#7a63f1",
+              },
+            }}
           />
-          <DropDown
-            className="input"
-            placeholder="From"
-            onChange={handleChange}
-            value={search.yearFrom}
-            name="yearFrom"
-            options={years}
-          />
-          <DropDown
-            className="input"
-            placeholder="To"
-            onChange={handleChange}
-            value={search.yearTo}
-            name="yearTo"
-            options={years}
-          />
-          <DropDown
-            className="input"
-            placeholder="Make"
-            onChange={handleChange}
-            value={search.make}
-            name="make"
-            options={makes}
-          />
-          <DropDown
-            className="input"
-            placeholder="Model"
-            onChange={handleChange}
-            value={search.model}
-            name="model"
-            options={models}
-          />
-          <button className="btn primaryBtn flex" onClick={navigateToResults}>
-            <AiOutlineSearch className="icon" />
-            <span>Search</span>
-          </button>
-        </div>
+          <span>Search by VIN Number</span>
+        </Box>
+
+        {!searchByVinNumber && (
+          <div className="searchDiv grid" data-aos="fade-up">
+            <DropDown
+              className="input"
+              placeholder="Auction Name"
+              onChange={handleChange}
+              value={auctionName}
+              name="auctionName"
+              options={auctionNames}
+            />
+            <DropDown
+              className="input"
+              placeholder="From"
+              onChange={handleChange}
+              value={yearFrom}
+              name="yearFrom"
+              options={years}
+            />
+            <DropDown
+              className="input"
+              placeholder="To"
+              onChange={handleChange}
+              value={yearTo}
+              name="yearTo"
+              options={years}
+            />
+            <DropDown
+              className="input"
+              placeholder="Make"
+              onChange={handleChange}
+              value={make}
+              name="make"
+              options={makes}
+            />
+            <DropDown
+              className="input"
+              placeholder="Model"
+              onChange={handleChange}
+              value={model}
+              name="model"
+              options={models}
+            />
+            <button className="btn primaryBtn flex" onClick={navigateToResults}>
+              <AiOutlineSearch className="icon" />
+              <span>Search</span>
+            </button>
+          </div>
+        )}
+
+        {searchByVinNumber && (
+          <Box className="vinDiv grid" data-aos="fade-up">
+            <TextField
+              id="standard-basic"
+              label="Vin Number"
+              variant="standard"
+              className="input"
+              value={vinNumber}
+              onChange={(event) => setVinNumber(event.target.value)}
+            />
+            <button
+              className="btn primaryBtn flex"
+              onClick={() => handleVinSearch(vinNumber)}
+            >
+              <AiOutlineSearch className="icon" />
+              <span>Search</span>
+            </button>
+          </Box>
+        )}
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import axios from "axios";
 export const fetchResults = createAsyncThunk(
   "results/fetchResults",
   async (params) => {
+    console.log(params);
     const response = await axios.get("http://localhost:8001/cars", {
       params: params,
     });

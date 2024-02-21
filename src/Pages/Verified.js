@@ -1,19 +1,34 @@
 import { Box } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { verifyUser } from "../redux/slice/verificationSlice";
 import { HashLoader } from "react-spinners";
 
 const Verified = () => {
   const { token } = useParams();
   const dispatch = useDispatch();
+  const [verified, setVerified] = useState(false);
+  const [load, setLoad] = useState(true);
   const { loading, user } = useSelector((state) => state.verify);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("Hello");
     dispatch(verifyUser({ token: token }));
   }, []);
+
+  useEffect(() => {
+    if (user.verified === true) {
+      console.log("Hello");
+      setVerified(true);
+      setLoad(false);
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    }
+  }, [loading, user]);
 
   return (
     <Box
@@ -37,14 +52,14 @@ const Verified = () => {
         }}
       >
         <Box textAlign="center" className="fs-3">
-          {loading && <HashLoader color="#7a63f1" size={50} />}
-          {user.verified && (
+          {load && <HashLoader color="#7a63f1" size={50} />}
+          {verified && (
             <RiVerifiedBadgeFill
               style={{ fontSize: "50px", color: "#7a63f1" }}
             />
           )}
         </Box>
-        {user.verified && <Box>Your account has been verified.</Box>}
+        {verified && <Box>Your account has been verified.</Box>}
       </Box>
     </Box>
   );

@@ -32,8 +32,8 @@ export default function DropDown(props) {
           name={props.name}
           MenuProps={MenuProps}
         >
-          <MenuItem value="None">
-            <em>None</em>
+          <MenuItem value="All">
+            <em>All</em>
           </MenuItem>
           {props.options &&
             props.options.map((option) => (

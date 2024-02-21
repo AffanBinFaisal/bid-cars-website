@@ -29,6 +29,7 @@ const SingleCar = () => {
   }
 
   const { vin } = useParams();
+  console.log(vin);
 
   const [data, setData] = useState([]);
 

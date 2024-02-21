@@ -12,6 +12,7 @@ const ResetPassword = () => {
   const [reset, setReset] = useState(false);
   const [error, setError] = useState(false);
   const [response, setResponse] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
     resetPassword();
@@ -30,8 +31,12 @@ const ResetPassword = () => {
       console.log(response.data);
       if (response.status == 200) {
         setReset(true);
-        setError(true);
+        setError(false);
         setResponse(response.data.message);
+
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
       }
     } catch (error) {
       setReset(false);

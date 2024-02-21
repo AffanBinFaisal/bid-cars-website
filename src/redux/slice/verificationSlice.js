@@ -17,9 +17,9 @@ export const verifyUser = createAsyncThunk(
   "user/verify",
   async (params, { rejectWithValue }) => {
     try {
-      const response = await axios.get("http://localhost:8001/auth/verify", {
-        params: params,
-      });
+      const response = await axios.get(
+        `http://localhost:8001/auth/verify/${params.token}`
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -46,12 +46,13 @@ export const verificationSlice = createSlice({
     builder.addCase(verifyUser.fulfilled, (state, action) => {
       console.log(action.payload);
       state.loading = false;
-      state.user = action.payload.data;
+      state.user.verified = true;
       state.isAuthenticated = true;
       state.error = "";
       // Update localStorage on the client-side
       if (typeof window !== "undefined") {
-        localStorage.setItem("userInfo", JSON.stringify(state));
+        const userInfo = { ...state, user: { ...state.user, verified: true } };
+        localStorage.setItem("userInfo", JSON.stringify(userInfo));
       }
     });
     builder.addCase(verifyUser.rejected, (state, action) => {

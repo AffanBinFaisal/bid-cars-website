@@ -33,14 +33,16 @@ const CurrentResults = () => {
   // const [results, setResults] = useState([]);
 
   // const location = useLocation();
-  const search = useSelector((state) => state.search);
+  const { auctionName, yearFrom, yearTo, make, model } = useSelector(
+    (state) => state.search
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
     // const search = location.state;
     // setSearch(search);
     // fetchCars(search);
-    dispatch(fetchResults(search));
+    dispatch(fetchResults({ auctionName, yearFrom, yearTo, make, model }));
   }, []);
 
   // const fetchCars = async (params) => {

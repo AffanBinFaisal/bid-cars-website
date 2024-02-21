@@ -31,6 +31,9 @@ a {
   text-decoration: none;
   cursor: pointer;
 }
+a:hover {
+  text-decoration: overline;
+}
 
 p {
   color: var(--textColor);

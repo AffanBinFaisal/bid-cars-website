@@ -28,7 +28,7 @@ const Verify = () => {
         </Box>
         <Box>
           We have a sent a verification link to your email. Please click on the
-          link and verify your account.
+          link and verify your account. You can now close this tab.
         </Box>
       </Box>
     </Box>
