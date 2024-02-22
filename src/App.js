@@ -27,7 +27,7 @@ import Watchlist from "./pages/Watchlist";
 import WatchlistArchived from "./pages/WatchlistArchived";
 import Shipping from "./pages/Shipping";
 import EmailPassword from "./pages/EmailPassword";
-import Layout from "./Layout/Layout";
+import Layout from "./layout/Layout";
 import SingleCar from "./pages/SingleCar";
 import Verify from "./pages/Verify";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -36,6 +36,7 @@ import Verified from "./pages/Verified";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
 import Success from "./pages/Success";
+import Admin from "./pages/Admin";
 
 const App = () => {
   return (
@@ -49,6 +50,7 @@ const App = () => {
       <Route path="deposit" element={<Deposit />} />
       <Route path="withdraw" element={<Withdraw />} />
       <Route path="success/:email" element={<Success />} />
+      <Route path="admin" element={<Admin />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="about-us" element={<About />} />
