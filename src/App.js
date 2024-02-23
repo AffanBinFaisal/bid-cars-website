@@ -36,7 +36,9 @@ import Verified from "./pages/Verified";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
 import Success from "./pages/Success";
-import Admin from "./pages/Admin";
+import AdminLayout from "./layout/AdminLayout";
+import Orders from "./pages/Admin/Orders";
+import Bids from "./pages/Admin/Bids";
 
 const App = () => {
   return (
@@ -50,7 +52,10 @@ const App = () => {
       <Route path="deposit" element={<Deposit />} />
       <Route path="withdraw" element={<Withdraw />} />
       <Route path="success/:email" element={<Success />} />
-      <Route path="admin" element={<Admin />} />
+      <Route path="/admin/" element={<AdminLayout />}>
+        <Route index element={<Orders />} />
+        <Route path="bids" element={<Bids />} />
+      </Route>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="about-us" element={<About />} />
