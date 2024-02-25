@@ -26,7 +26,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
-  // hide last border
   "&:last-child td, &:last-child th": {
     border: 0,
   },
@@ -54,22 +53,17 @@ const Orders = () => {
   return (
     <Box className="container">
       <span className="fs-1 mb-5">Orders</span>
-      <TableContainer component={Paper} sx={{ marginTop: "2rem" }}>
+      <TableContainer
+        component={Paper}
+        sx={{ marginTop: "2rem", width: "100%" }}
+      >
         <Table aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell align="left" sx={{ fontSize: "small" }}>
-                Number
-              </StyledTableCell>
-              <StyledTableCell align="left" sx={{ fontSize: "small" }}>
-                Name
-              </StyledTableCell>
-              <StyledTableCell align="left" sx={{ fontSize: "small" }}>
-                Vin Number
-              </StyledTableCell>
-              <StyledTableCell align="left" sx={{ fontSize: "small" }}>
-                Options
-              </StyledTableCell>
+              <StyledTableCell align="left">Number</StyledTableCell>
+              <StyledTableCell align="left">Name</StyledTableCell>
+              <StyledTableCell align="left">Vin Number</StyledTableCell>
+              <StyledTableCell align="left">Options</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>

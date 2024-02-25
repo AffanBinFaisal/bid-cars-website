@@ -100,9 +100,12 @@ const Navbar = () => {
 
       <div className="signUp flex">
         {isAuthenticated && (
-          <button className="btn primaryBtn" onClick={handleLogout}>
-            Log Out
-          </button>
+          <>
+            <div>Balance: {user.balance}</div>
+            <button className="btn primaryBtn" onClick={handleLogout}>
+              Log Out
+            </button>
+          </>
         )}
         {!isAuthenticated && (
           <>
