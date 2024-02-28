@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
-import { verify, reset } from "../redux/user/userSlice";
+import { deposit, reset } from "../redux/user/userSlice";
 import { HashLoader } from "react-spinners";
 
-const Verified = () => {
+const SuccessfullPayment = () => {
   const { token } = useParams();
   const dispatch = useDispatch();
   const { isAuthenticated, message, loading, error, userInfo } = useSelector(
@@ -15,9 +15,7 @@ const Verified = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    var i = 0;
-    console.log(i++);
-    dispatch(verify({ token: token }));
+    dispatch(deposit({ token: token }));
   }, []);
 
   if (userInfo.verified) {
@@ -56,10 +54,10 @@ const Verified = () => {
             />
           )}
         </Box>
-        {!loading && <Box>Your account has been verified.</Box>}
+        {!loading && <Box>Your transaction was successfull.</Box>}
       </Box>
     </Box>
   );
 };
 
-export default Verified;
+export default SuccessfullPayment;

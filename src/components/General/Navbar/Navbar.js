@@ -1,21 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Navbar.css";
 
 import { IoIosCloseCircle } from "react-icons/io";
 import { TbGridDots } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
-import { loginLogout } from "../../../redux/slice/loginSlice";
-import { registerLogout } from "../../../redux/slice/registerSlice";
-import { logoutUser } from "../../../redux/slice/logoutSlice";
+import { logout, reset } from "../../../redux/user/userSlice";
+// import { loginLogout } from "../../../redux/slice/loginSlice";
+// import { registerLogout } from "../../../redux/slice/registerSlice";
+// import { logoutUser } from "../../../redux/slice/logoutSlice";
 
 const Navbar = () => {
   const [navbar, setNavbar] = useState("navbar");
   const [header, setHeader] = useState("header");
-  const { isAuthenticated, message, loading, error, user } = useSelector(
-    (state) => state.login
-  );
   const dispatch = useDispatch();
-
+  const { isAuthenticated, message, loading, error, userInfo } = useSelector(
+    (state) => state.user
+  );
   const showNavbar = () => {
     setNavbar("navbar showNavbar");
   };
@@ -32,10 +32,14 @@ const Navbar = () => {
   window.addEventListener("scroll", addBg);
 
   const handleLogout = () => {
-    dispatch(logoutUser());
-    dispatch(loginLogout());
-    dispatch(registerLogout());
+    dispatch(logout());
+    dispatch(reset());
   };
+
+  useEffect(() => {
+    console.log(userInfo, error, message, loading, isAuthenticated);
+    dispatch(reset());
+  }, [dispatch, userInfo, error, message, loading, isAuthenticated]);
 
   return (
     <div className={header}>
@@ -79,7 +83,7 @@ const Navbar = () => {
               Contact
             </a>
           </li>
-          {isAuthenticated && (
+          {userInfo && (
             <>
               <li onClick={removeNavbar} className="listItem">
                 <a href="/deposit" className="link">
@@ -99,15 +103,14 @@ const Navbar = () => {
       </div>
 
       <div className="signUp flex">
-        {isAuthenticated && (
+        {userInfo ? (
           <>
-            <div>Balance: {user.balance}</div>
+            <div>Balance: {userInfo.balance}</div>
             <button className="btn primaryBtn" onClick={handleLogout}>
               Log Out
             </button>
           </>
-        )}
-        {!isAuthenticated && (
+        ) : (
           <>
             <div className="text">
               <a href="/login" className="link">

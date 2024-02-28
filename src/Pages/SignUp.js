@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../redux/slice/registerSlice";
+import { reset, register } from "../redux/user/userSlice";
 import { useNavigate } from "react-router";
 
 const SignUp = () => {
@@ -11,22 +11,23 @@ const SignUp = () => {
     password: "",
   });
   const dispatch = useDispatch();
-  const { isAuthenticated, message, loading, error, user } = useSelector(
-    (state) => state.register
+  const { isAuthenticated, message, loading, error, userInfo } = useSelector(
+    (state) => state.user
   );
   const navigate = useNavigate();
 
   const handleRegister = () => {
-    console.log(userData);
-    dispatch(registerUser(userData));
-    if (!error) {
-      navigate("/verify");
-    }
+    dispatch(register(userData));
   };
 
   useEffect(() => {
-    console.log(isAuthenticated, message, loading, error, user);
-  }, [isAuthenticated, message, loading, error, user]);
+    console.log(userData);
+    console.log(isAuthenticated, message, loading, error, userInfo);
+    if (isAuthenticated || userInfo) {
+      navigate("/verify");
+    }
+    dispatch(reset());
+  }, [isAuthenticated, message, loading, error, userInfo]);
 
   return (
     <Box

@@ -40,6 +40,7 @@ import AdminLayout from "./layout/AdminLayout";
 import Orders from "./pages/Admin/Orders";
 import Bids from "./pages/Admin/Bids";
 import EditOrder from "./pages/EditOrder";
+import SuccessfullPayment from "./pages/SuccessfullPayment";
 
 const App = () => {
   return (
@@ -51,6 +52,10 @@ const App = () => {
       <Route path="forgot-password" element={<ForgotPassword />} />
       <Route path="reset-password/:token" element={<ResetPassword />} />
       <Route path="deposit" element={<Deposit />} />
+      <Route
+        path=":email/transaction/successful"
+        element={<SuccessfullPayment />}
+      />
       <Route path="withdraw" element={<Withdraw />} />
       <Route path="success/:email" element={<Success />} />
       <Route path="/admin/" element={<AdminLayout />}>

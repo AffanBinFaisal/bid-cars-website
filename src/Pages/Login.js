@@ -2,7 +2,8 @@ import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../redux/slice/loginSlice";
+// import { loginUser } from "../redux/slice/loginSlice";
+import { login, reset } from "../redux/user/userSlice";
 import { HashLoader } from "react-spinners";
 import { useNavigate } from "react-router";
 import Alert from "@mui/material/Alert";
@@ -14,22 +15,24 @@ const Login = () => {
     password: "",
   });
   const dispatch = useDispatch();
-  const { isAuthenticated, message, loading, error, user } = useSelector(
-    (state) => state.login
-  );
   const navigate = useNavigate();
+  const { isAuthenticated, message, loading, error, userInfo } = useSelector(
+    (state) => state.user
+  );
 
   const handleLogin = () => {
-    dispatch(loginUser(userData));
+    dispatch(login(userData));
   };
 
   useEffect(() => {
     console.log(userData);
-    console.log(isAuthenticated, message, loading, error, user);
-    if (isAuthenticated) {
+    console.log(isAuthenticated, message, loading, error, userInfo);
+    if (isAuthenticated || userInfo) {
       navigate("/");
     }
-  }, [dispatch, isAuthenticated]);
+
+    dispatch(reset());
+  }, [dispatch, navigate, userInfo, error, message, loading, isAuthenticated]);
 
   return (
     <Box

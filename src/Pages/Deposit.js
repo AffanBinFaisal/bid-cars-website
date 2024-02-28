@@ -10,7 +10,7 @@ const Deposit = () => {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState(null);
   const [err, setErr] = useState("");
-  const userInfo = useSelector((state) => state.login);
+  const { userInfo } = useSelector((state) => state.user);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -18,7 +18,7 @@ const Deposit = () => {
       const config = {
         headers: {
           "content-type": "application/json",
-          Authorization: userInfo.user.token,
+          Authorization: userInfo.token,
         },
       };
       const response = await axios.post(
