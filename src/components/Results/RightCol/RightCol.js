@@ -11,6 +11,7 @@ import "./RightCol.css";
 import { useDispatch, useSelector } from "react-redux";
 import { resultsChanged } from "../../../redux/slice/resultsSlice";
 import { Link } from "react-router-dom";
+import { HashLoader } from "react-spinners";
 
 const gridTemplateLargeScreen = `
   "left mid right"
@@ -112,23 +113,36 @@ const RightCol = () => {
         </Box>
       </DashboardBox>
 
-      {loading && <DashboardBox>Loading...</DashboardBox>}
-      {filteredCars &&
-        filteredCars.map((result) => (
-          <DashboardBox>
-            <Box
-              height="auto"
-              width="100%"
-              display="grid"
-              gap="1rem"
-              sx={{
-                gridTemplateAreas: gridTemplateAreas,
-                gridTemplateColumns: gridTemplateColumns,
-              }}
-              className="filters"
-            >
-              <Box height="100%">
-                {/* <Carousel
+      {loading ? (
+        <DashboardBox>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <HashLoader color="#7a63f1" size={50} />
+          </Box>
+        </DashboardBox>
+      ) : (
+        <>
+          {filteredCars &&
+            filteredCars.map((result) => (
+              <DashboardBox>
+                <Box
+                  height="auto"
+                  width="100%"
+                  display="grid"
+                  gap="1rem"
+                  sx={{
+                    gridTemplateAreas: gridTemplateAreas,
+                    gridTemplateColumns: gridTemplateColumns,
+                  }}
+                  className="filters"
+                >
+                  <Box height="100%">
+                    {/* <Carousel
                   activeIndex={index}
                   onSelect={handleSelect}
                   style={{
@@ -146,128 +160,150 @@ const RightCol = () => {
                     </Carousel.Item>
                   ))}
                 </Carousel> */}
-                <Carousel>
-                  {result.car_photo.photo.map((singlePhoto, i) => (
-                    <img src={singlePhoto} alt="Car" />
-                  ))}
-                </Carousel>
-              </Box>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Box paddingBottom=".5rem">
-                  <Link
-                    to={`/lot/${result.make}/${result.model}/${result.vin}`}
-                    className="fs-4 hover"
-                    style={{
-                      color: "#7a63f1",
-                      fontWeight: "bold",
+                    <Carousel>
+                      {result.car_photo.photo.map((singlePhoto, i) => (
+                        <img src={singlePhoto} alt="Car" />
+                      ))}
+                    </Carousel>
+                  </Box>
+                  <Box sx={{ display: "flex", flexDirection: "column" }}>
+                    <Box paddingBottom=".5rem">
+                      <Link
+                        to={`/lot/${result.make}/${result.model}/${result.vin}`}
+                        className="fs-4 hover"
+                        style={{
+                          color: "#7a63f1",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {result.year} {result.make} {result.model}
+                      </Link>
+                    </Box>
+
+                    <Box
+                      display="grid"
+                      columnGap="1rem"
+                      sx={{
+                        gridTemplateAreas: midTemplateAreas,
+                        gridTemplateColumns: midTemplateColumns,
+                      }}
+                    >
+                      <Box>
+                        <div className="flex prop">
+                          <span className="propTitle text-nowrap">
+                            Number:{" "}
+                          </span>
+                          <span>
+                            {result.lot_number == ""
+                              ? "--"
+                              : `0-${result.lot_number}`}
+                          </span>
+                        </div>
+                        <div className="flex prop">
+                          <span className="propTitle text-nowrap">VIN: </span>
+                          <span>
+                            {result.vin == "" ? "--" : `${result.vin}`}
+                          </span>
+                        </div>
+                        <div className="flex prop">
+                          <span className="propTitle text-nowrap">
+                            Milage:{" "}
+                          </span>
+                          <span>
+                            {result.odometer == ""
+                              ? "--"
+                              : `${result.odometer} miles (${Math.round(
+                                  result.odometer * 1.60934
+                                )} kms)`}
+                          </span>
+                        </div>
+                        <div className="flex prop">
+                          <span className="propTitle text-nowrap">
+                            Location:{" "}
+                          </span>
+                          <span>
+                            {result.location == ""
+                              ? "--"
+                              : `${result.location}`}
+                          </span>
+                        </div>
+                      </Box>
+                      <Box>
+                        <div className="flex prop">
+                          <span className="propTitle text-nowrap">
+                            Seller:{" "}
+                          </span>
+                          <span>
+                            {result.seller == "" ? "--" : `${result.seller}`}
+                          </span>
+                        </div>
+                        <div className="flex prop">
+                          <span className="propTitle text-nowrap">
+                            Sale doc.:{" "}
+                          </span>
+                          <span>
+                            {result.doc_type == ""
+                              ? "--"
+                              : `${result.doc_type}`}
+                          </span>
+                        </div>
+                        <div className="flex prop">
+                          <span className="propTitle text-nowrap">
+                            Damage:{" "}
+                          </span>
+                          <span>
+                            {result.primary_damage == ""
+                              ? "--"
+                              : `${result.primary_damage}`}{" "}
+                            |{" "}
+                            {result.secondary_damage == ""
+                              ? "--"
+                              : `${result.secondary_damage}`}
+                          </span>
+                        </div>
+                        <div className="flex prop">
+                          <span className="propTitle text-nowrap">
+                            Status:{" "}
+                          </span>
+                          <span style={{ fontWeight: "bold" }}>
+                            {result.highlights == ""
+                              ? "--"
+                              : `${result.highlights}`}
+                          </span>
+                        </div>
+                      </Box>
+                    </Box>
+                  </Box>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "1rem",
+                      alignItems: "center",
                     }}
                   >
-                    {result.year} {result.make} {result.model}
-                  </Link>
-                </Box>
+                    <div className="time">
+                      <CalendarTodayIcon /> Fri 9 Feb, 19:30 GMT+5
+                    </div>
+                    {result.active_bidding[0].current_bid && (
+                      <div className="price1">
+                        Current Bid ${result.active_bidding[0].current_bid}
+                      </div>
+                    )}
 
-                <Box
-                  display="grid"
-                  columnGap="1rem"
-                  sx={{
-                    gridTemplateAreas: midTemplateAreas,
-                    gridTemplateColumns: midTemplateColumns,
-                  }}
-                >
-                  <Box>
-                    <div className="flex prop">
-                      <span className="propTitle text-nowrap">Number: </span>
-                      <span>
-                        {result.lot_number == ""
-                          ? "--"
-                          : `0-${result.lot_number}`}
-                      </span>
-                    </div>
-                    <div className="flex prop">
-                      <span className="propTitle text-nowrap">VIN: </span>
-                      <span>{result.vin == "" ? "--" : `${result.vin}`}</span>
-                    </div>
-                    <div className="flex prop">
-                      <span className="propTitle text-nowrap">Milage: </span>
-                      <span>
-                        {result.odometer == ""
-                          ? "--"
-                          : `${result.odometer} miles (${Math.round(
-                              result.odometer * 1.60934
-                            )} kms)`}
-                      </span>
-                    </div>
-                    <div className="flex prop">
-                      <span className="propTitle text-nowrap">Location: </span>
-                      <span>
-                        {result.location == "" ? "--" : `${result.location}`}
-                      </span>
-                    </div>
-                  </Box>
-                  <Box>
-                    <div className="flex prop">
-                      <span className="propTitle text-nowrap">Seller: </span>
-                      <span>
-                        {result.seller == "" ? "--" : `${result.seller}`}
-                      </span>
-                    </div>
-                    <div className="flex prop">
-                      <span className="propTitle text-nowrap">Sale doc.: </span>
-                      <span>
-                        {result.doc_type == "" ? "--" : `${result.doc_type}`}
-                      </span>
-                    </div>
-                    <div className="flex prop">
-                      <span className="propTitle text-nowrap">Damage: </span>
-                      <span>
-                        {result.primary_damage == ""
-                          ? "--"
-                          : `${result.primary_damage}`}{" "}
-                        |{" "}
-                        {result.secondary_damage == ""
-                          ? "--"
-                          : `${result.secondary_damage}`}
-                      </span>
-                    </div>
-                    <div className="flex prop">
-                      <span className="propTitle text-nowrap">Status: </span>
-                      <span style={{ fontWeight: "bold" }}>
-                        {result.highlights == ""
-                          ? "--"
-                          : `${result.highlights}`}
-                      </span>
-                    </div>
+                    {result.buy_now_car && (
+                      <div className="price2">
+                        Buy Now ${result.buy_now_car.purchase_price}
+                      </div>
+                    )}
+                    <div className="time">Fri 9 Feb, 19:30 GMT+5</div>
                   </Box>
                 </Box>
-              </Box>
-
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                  alignItems: "center",
-                }}
-              >
-                <div className="time">
-                  <CalendarTodayIcon /> Fri 9 Feb, 19:30 GMT+5
-                </div>
-                {result.active_bidding[0].current_bid && (
-                  <div className="price1">
-                    Current Bid ${result.active_bidding[0].current_bid}
-                  </div>
-                )}
-
-                {result.buy_now_car && (
-                  <div className="price2">
-                    Buy Now ${result.buy_now_car.purchase_price}
-                  </div>
-                )}
-                <div className="time">Fri 9 Feb, 19:30 GMT+5</div>
-              </Box>
-            </Box>
-          </DashboardBox>
-        ))}
+              </DashboardBox>
+            ))}
+        </>
+      )}
     </div>
   );
 };

@@ -2,30 +2,27 @@ import { Box } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router";
 import { HashLoader } from "react-spinners";
+import { processDeposit } from "../redux/user/userSlice";
+import Alert from "@mui/material/Alert";
 
 const Success = () => {
   const { email } = useParams();
-  const [success, setSuccess] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
-
-  const processTransaction = async () => {
-    const response = await axios.get("http://localhost:8001/payments/success", {
-      params: { email: email },
-    });
-
-    if (response.status == 200) {
-      setSuccess(true);
-      setTimeout(() => {
-        navigate("/");
-      }, 2000);
-    }
-  };
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    processTransaction();
+    dispatch(processDeposit({ email: email }));
   }, []);
+
+  if (!error) {
+    setTimeout(() => {
+      navigate("/");
+    }, 2000);
+  }
 
   return (
     <Box
@@ -48,18 +45,25 @@ const Success = () => {
           borderRadius: "10px",
         }}
       >
-        <Box textAlign="center" className="fs-3">
-          {success ? (
-            <>
-              <RiVerifiedBadgeFill
-                style={{ fontSize: "50px", color: "#7a63f1" }}
-              />
-              <Box>Your transaction was succesfull</Box>
-            </>
-          ) : (
-            <HashLoader color="#7a63f1" size={50} />
-          )}
-        </Box>
+        {error && (
+          <Alert variant="filled" severity="error">
+            {error}
+          </Alert>
+        )}
+        {loading ? (
+          <HashLoader color="#7a63f1" size={50} />
+        ) : (
+          <Box textAlign="center" className="fs-3">
+            {!error && (
+              <>
+                <RiVerifiedBadgeFill
+                  style={{ fontSize: "50px", color: "#7a63f1" }}
+                />
+                <Box>Your transaction was succesfull</Box>
+              </>
+            )}
+          </Box>
+        )}
       </Box>
     </Box>
   );

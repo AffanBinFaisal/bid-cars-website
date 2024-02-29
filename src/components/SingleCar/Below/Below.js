@@ -12,7 +12,7 @@ import VehicleOptions from "../../HomePage/VehicleOptions/VehicleOptions";
 const Below = (props) => {
   return (
     <>
-      {props.data.map((carInfo) => (
+      {props.data && (
         <>
           <DashboardBox>
             <Box
@@ -38,9 +38,11 @@ const Below = (props) => {
                     color: "#7a63f1",
                   }}
                 >
-                  {carInfo.year} {carInfo.make} {carInfo.model}
+                  {props.data.year} {props.data.make} {props.data.model}
                 </span>
-                <span className="btn primaryBtn">{carInfo.auction_name}</span>
+                <span className="btn primaryBtn">
+                  {props.data.auction_name}
+                </span>
                 <span
                   style={{
                     border: "1px solid grey",
@@ -48,20 +50,24 @@ const Below = (props) => {
                     borderRadius: "10px",
                   }}
                 >
-                  Live Auction | {carInfo.created_at}
+                  Live Auction | {props.data.created_at}
                 </span>
               </Box>
-              <Box>
-                <span
-                  style={{
-                    backgroundColor: "rgb(230, 230, 230)",
-                    padding: ".5rem",
-                    borderRadius: "10px",
-                  }}
-                >
-                  Current Bid: ${carInfo.active_bidding[0] ? carInfo.active_bidding[0].current_bid : null}
-                </span>
-              </Box>
+              {props.data.active_bidding &&
+              Array.isArray(props.data.active_bidding) &&
+              props.data.active_bidding.length > 0 ? (
+                <Box>
+                  <span
+                    style={{
+                      backgroundColor: "rgb(230, 230, 230)",
+                      padding: ".5rem",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    Current Bid: ${props.data.active_bidding[0].current_bid}
+                  </span>
+                </Box>
+              ) : null}
             </Box>
 
             <Box>
@@ -69,25 +75,29 @@ const Below = (props) => {
                 <div>
                   <span className="propTitle">Lot: </span>
                   <span className="text-nowrap fst-italic">
-                    0-{carInfo.lot_number}
+                    {props.data.lot_number}
                   </span>
-                  <CopyToClipboard value="0-37156122" />
+                  <CopyToClipboard value={props.data.lot_number} />
                 </div>
                 <div>
                   <span className="propTitle">VIN: </span>
-                  <span className="text-nowrap fst-italic">{carInfo.vin}</span>
-                  <CopyToClipboard value="KM8J23A49LU169525" />
+                  <span className="text-nowrap fst-italic">
+                    {props.data.vin}
+                  </span>
+                  <CopyToClipboard value={props.data.vin} />
                 </div>
               </Box>
               <div>
                 <span className="propTitle">Sale Document: </span>
                 <span className="text-nowrap fst-italic">
-                  {carInfo.doc_type}
+                  {props.data.doc_type}
                 </span>
               </div>
               <div>
                 <span className="propTitle">Seller: </span>
-                <span className="text-nowrap fst-italic">{carInfo.seller}</span>
+                <span className="text-nowrap fst-italic">
+                  {props.data.seller}
+                </span>
               </div>
               <div>
                 <span className="propTitle">Estimated final price: </span>
@@ -96,13 +106,13 @@ const Below = (props) => {
               <div>
                 <span className="propTitle">Engine: </span>
                 <span className="text-nowrap fst-italic">
-                  {carInfo.engine_type}
+                  {props.data.engine_type}
                 </span>
               </div>
             </Box>
           </DashboardBox>
 
-          <DashboardBox>
+          {/* <DashboardBox>
             <Accordion sx={{ background: "#f4f4f4" }}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
@@ -127,9 +137,9 @@ const Below = (props) => {
                 <VehicleOptions type="Cars" quantity="123" />
               </AccordionDetails>
             </Accordion>
-          </DashboardBox>
+          </DashboardBox> */}
         </>
-      ))}
+      )}
     </>
   );
 };

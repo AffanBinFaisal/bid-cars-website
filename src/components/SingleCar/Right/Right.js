@@ -1,30 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardBox from "../../General/DashboardBox/DashboardBox";
 import { Box, FormGroup } from "@mui/material";
 import { TbReportSearch } from "react-icons/tb";
 import { SlCalender } from "react-icons/sl";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
-import { FaPlus, FaMinus } from "react-icons/fa";
+import { FaPlus, FaMinus, FaSmileBeam } from "react-icons/fa";
 import { Button } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
+// import Checkbox from "@mui/material/Checkbox";
+// import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import "./Right.css";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { HashLoader } from "react-spinners";
 
-const Right = () => {
+const Right = (props) => {
   const [value, setValue] = useState(0);
-  const [shippingTo, setShippingTo] = React.useState("");
-  const [tax, setTax] = React.useState("");
-  const [vat, setVAT] = React.useState("");
-  const [currency, setCurrency] = React.useState("");
-  const [purchaseRestriction, setPurchaseRestriction] = React.useState(false);
-  const [hazardousCargo, setHazardousCargo] = React.useState(false);
-  const [oversizedVehicle, setOversizedVehicle] = React.useState(false);
+  const [shippingTo, setShippingTo] = React.useState("klaipeda");
+  // const [tax, setTax] = React.useState("");
+  // const [vat, setVAT] = React.useState("");
+  // const [currency, setCurrency] = React.useState("");
+  // const [purchaseRestriction, setPurchaseRestriction] = React.useState(false);
+  // const [hazardousCargo, setHazardousCargo] = React.useState(false);
+  // const [oversizedVehicle, setOversizedVehicle] = React.useState(false);
+  const { userInfo } = useSelector((state) => state.user);
+  const { vin } = useParams();
+  const [error, setError] = useState(null);
+  const [response, setResponse] = useState({
+    destinationFee: 0,
+    environmentalFee: 0,
+    gateFee: 0,
+    internetBidFee: 0,
+    liveBidFee: 0,
+    price: 0,
+    proxyBidFee: 0,
+    serviceFee: 0,
+    total: 0,
+    transportFee: 0,
+  });
+  const [loading, setLoading] = useState(false);
 
   const handleIncrement = () => {
     setValue((prevValue) => prevValue + 500);
@@ -33,6 +52,76 @@ const Right = () => {
   const handleDecrement = () => {
     setValue((prevValue) => prevValue - 500);
   };
+
+  const handleShippingChange = (event) => {
+    setShippingTo(event.target.value);
+    fetchCalculator(value, event.target.value);
+  };
+
+  const handleClick = async () => {
+    try {
+      const info = {
+        vehicle: props.data ? props.data.vin : null,
+        amount: value,
+        merchant: props.data ? props.data.auction_name : null,
+      };
+      const config = {
+        headers: {
+          "content-type": "application/json",
+          Authorization: userInfo.token,
+        },
+      };
+      const response = await axios.post(
+        `http://localhost:8001/bids/create`,
+        info,
+        config
+      );
+      const data = response.data;
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching makes:", error);
+    }
+  };
+
+  const fetchCalculator = async (cost, destination) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `http://localhost:8001/calculations/calculate-new`,
+        {
+          params: {
+            price: cost,
+            vin: vin,
+            destination: destination,
+          },
+        }
+      );
+      const data = response.data;
+      console.log(data);
+      setResponse({
+        destinationFee: data.destinationFee,
+        environmentalFee: data.environmentalFee,
+        gateFee: data.gateFee,
+        internetBidFee: data.internetBidFee,
+        liveBidFee: data.liveBidFee,
+        price: data.price,
+        proxyBidFee: data.proxyBidFee,
+        serviceFee: data.serviceFee,
+        total: data.total,
+        transportFee: data.transportFee,
+      });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      setError(error.response.data.error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCalculator(value, shippingTo);
+  }, [value]);
+
+  console.log(error);
 
   return (
     <Box display="flex" flexDirection="column" gap="1rem">
@@ -59,197 +148,321 @@ const Right = () => {
         </Box>
       </DashboardBox>
 
-      <DashboardBox>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: ".5rem",
-              bgcolor: "rgb(230, 230, 230)",
-              borderRadius: "10px",
-              padding: "1rem .1rem",
-            }}
-          >
+      {!error && (
+        <DashboardBox>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
             <Box
               sx={{
                 display: "flex",
-                alignItems: "center",
-                gap: ".2rem",
-                justifyContent: "center",
-                color: "#a3a3a3",
+                flexDirection: "column",
+                gap: ".5rem",
+                bgcolor: "rgb(230, 230, 230)",
+                borderRadius: "10px",
+                padding: "1rem .1rem",
               }}
             >
-              <SlCalender />
-              <span>Estimated Delivery Time (EU)</span>
-            </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: ".2rem",
+                  justifyContent: "center",
+                  color: "#a3a3a3",
+                }}
+              >
+                <SlCalender />
+                <span>Estimated Delivery Time (EU)</span>
+              </Box>
 
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-evenly",
+                  fontSize: "14px",
+                }}
+              >
+                <span>Tuesday, 2 April</span>
+                <span>Tuesday, 16 April</span>
+              </Box>
+            </Box>
             <Box
               sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-evenly",
-                fontSize: "14px",
-              }}
-            >
-              <span>Tuesday, 2 April</span>
-              <span>Tuesday, 16 April</span>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              padding: "1rem",
-              border: "1px dashed #7a63f1",
-              textAlign: "center",
-              borderRadius: "10px",
-            }}
-          >
-            Type your maximum amount below. You will be represented by BidCars
-            on live bidding. If it sells for less, you get it for less!
-          </Box>
-          <Box>
-            <InputGroup
-              className="mb-3"
-              style={{
-                backgroundColor: "#7a63f1",
-                color: "white",
+                padding: "1rem",
+                border: "1px dashed #7a63f1",
+                textAlign: "center",
                 borderRadius: "10px",
               }}
             >
-              <Button
-                variant="outline-secondary"
-                id="button-addon1"
-                onClick={handleDecrement}
-              >
-                <FaMinus />
-              </Button>
-              <Form.Control
-                aria-label="Example text with button addon"
-                aria-describedby="basic-addon1"
-                style={{ textAlign: "center" }}
-                value={`$${value}`}
-              />
-              <Button
-                variant="outline-secondary"
-                id="button-addon1"
-                onClick={handleIncrement}
-              >
-                <FaPlus />
-              </Button>
-            </InputGroup>
-            <Box
-              className="btn primaryBtn"
-              sx={{
-                fontSize: "13px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              Please login to be able to bid this vehicle
+              Type your maximum amount below. You will be represented by BidCars
+              on live bidding. If it sells for less, you get it for less!
             </Box>
-            <Box sx={{ color: "#7a63f1", textAlign: "center", mt: "10px" }}>
-              Closes in 2d 5h 59min
+            <Box>
+              <InputGroup
+                className="mb-3"
+                style={{
+                  backgroundColor: "#7a63f1",
+                  color: "white",
+                  borderRadius: "10px",
+                }}
+              >
+                <Button
+                  variant="outline-secondary"
+                  id="button-addon1"
+                  onClick={handleDecrement}
+                >
+                  <FaMinus />
+                </Button>
+                <Form.Control
+                  aria-label="Example text with button addon"
+                  aria-describedby="basic-addon1"
+                  style={{ textAlign: "center" }}
+                  value={`$${value}`}
+                />
+                <Button
+                  variant="outline-secondary"
+                  id="button-addon1"
+                  onClick={handleIncrement}
+                >
+                  <FaPlus />
+                </Button>
+              </InputGroup>
+              {!userInfo ? (
+                <Box
+                  className="btn primaryBtn"
+                  sx={{
+                    fontSize: "13px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  Please login to be able to bid this vehicle
+                </Box>
+              ) : (
+                <Box textAlign={"center"}>
+                  <button
+                    className="btn primaryBtn"
+                    onClick={handleClick}
+                    style={{ fontSize: "20px", padding: ".5rem 2rem" }}
+                  >
+                    Bid
+                  </button>
+                </Box>
+              )}
+              <Box sx={{ color: "#7a63f1", textAlign: "center", mt: "10px" }}>
+                Closes in 2d 5h 59min
+              </Box>
+              <hr />
             </Box>
-            <hr />
-          </Box>
-          <Box>
-            <span style={{ fontWeight: "bold", fontSize: "20px" }}>
-              Final Price Calculator
-            </span>
-            <hr />
-            <Box sx={{ fontSize: "14px" }}>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>Lot Price</span>
-                <span>$2,625</span>
-              </Box>
+            <Box>
+              <span style={{ fontWeight: "bold", fontSize: "20px" }}>
+                Final Price Calculator
+              </span>
               <hr />
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>Auction Fees</span>
-                <span>$588</span>
-              </Box>
-              <hr />
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>Trucking to port</span>
-                <span>$390</span>
-              </Box>
-              <hr />
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
+              {loading ? (
                 <Box
                   sx={{
                     display: "flex",
                     alignItems: "center",
-                    gap: ".5rem",
+                    justifyContent: "center",
                   }}
                 >
-                  <span>Shipping to</span>
-                  <FormControl size="small" sx={{ minWidth: "100px" }}>
-                    <InputLabel id="demo-simple-select-label">
-                      Shipping To
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={shippingTo}
-                      label="shippingTo"
-                      onChange={(event) => setShippingTo(event.target.value)}
-                    >
-                      <MenuItem value={"rotterdam"}>Rotterdam, NL</MenuItem>
-                      <MenuItem value={"gdynia"}>Gdynia, PL</MenuItem>
-                      <MenuItem value={"bremerhaven"}>Bremerhaven, DE</MenuItem>
-                      <MenuItem value={"klaipeda"}>Klaipeda, LT</MenuItem>
-                    </Select>
-                  </FormControl>
+                  <HashLoader color="#7a63f1" size={50} />
                 </Box>
-                <span>$995</span>
-              </Box>
-              <hr />
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>Final Price</span>
-                <span>$5,152</span>
-              </Box>
-              <hr />
-              <Box>
-                The calculator check location of the vehicle and shipment from
-                one of the six ports in the USA depending on the branch
-                location.
-              </Box>
+              ) : (
+                <Box sx={{ fontSize: "14px" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>Lot Price</span>
+                    <span>
+                      {response.price == null || response.price == 0
+                        ? "-"
+                        : `$${response.price}`}
+                    </span>
+                  </Box>
+                  <hr />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>Gate Fee</span>
+                    <span>
+                      {response.gateFee == null || response.gateFee == 0
+                        ? "-"
+                        : `$${response.gateFee}`}
+                    </span>
+                  </Box>
+                  <hr />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>Environmental Fee</span>
+                    <span>
+                      {response.environmentalFee == null ||
+                      response.environmentalFee == 0
+                        ? "-"
+                        : `$${response.environmentalFee}`}
+                    </span>
+                  </Box>
+                  <hr />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: ".5rem",
+                      }}
+                    >
+                      <span>Shipping to</span>
+                      <FormControl size="small" sx={{ minWidth: "100px" }}>
+                        <InputLabel id="demo-simple-select-label">
+                          Shipping To
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={shippingTo}
+                          label="shippingTo"
+                          onChange={handleShippingChange}
+                        >
+                          <MenuItem value={"poti ge"}>Poti, GE</MenuItem>
+                          <MenuItem value={"rotterdam"}>Rotterdam</MenuItem>
+                          <MenuItem value={"klaipeda"}>Klaipeda</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Box>
+                    <span>
+                      {response.destinationFee == null ||
+                      response.destinationFee == 0
+                        ? "-"
+                        : `$${response.destinationFee}`}
+                    </span>
+                  </Box>
+                  <hr />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>Service Fee</span>
+                    <span>
+                      {response.serviceFee == null || response.serviceFee == 0
+                        ? "-"
+                        : `$${response.serviceFee}`}
+                    </span>
+                  </Box>
+                  <hr />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>Transport Fee</span>
+                    <span>
+                      {response.transportFee == null ||
+                      response.transportFee == 0
+                        ? "-"
+                        : `$${response.transportFee}`}
+                    </span>
+                  </Box>
+                  <hr />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>Internet Bid Fee</span>
+                    <span>
+                      {response.internetBidFee == null ||
+                      response.internetBidFee == 0
+                        ? "-"
+                        : `$${response.internetBidFee}`}
+                    </span>
+                  </Box>
+                  <hr />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>Proxy Bid Fee</span>
+                    <span>
+                      {response.proxyBidFee == null || response.proxyBidFee == 0
+                        ? "-"
+                        : `$${response.proxyBidFee}`}
+                    </span>
+                  </Box>
+                  <hr />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>Live Bid Fee</span>
+                    <span>
+                      {response.liveBidFee == null || response.liveBidFee == 0
+                        ? "-"
+                        : `$${response.liveBidFee}`}
+                    </span>
+                  </Box>
+                  <hr />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span>Final Price</span>
+                    <span>
+                      {response.total == null || response.total == 0
+                        ? "-"
+                        : `$${response.total}`}
+                    </span>
+                  </Box>
+                  <hr />
+                  <Box>
+                    The calculator check location of the vehicle and shipment
+                    from one of the six ports in the USA depending on the branch
+                    location.
+                  </Box>
+                </Box>
+              )}
             </Box>
           </Box>
-        </Box>
-      </DashboardBox>
+        </DashboardBox>
+      )}
 
-      <DashboardBox>
+      {/* <DashboardBox>
         <Box>
           <span style={{ fontWeight: "bold", fontSize: "20px" }}>
             Custom clearance calculator (EU only)
@@ -406,9 +619,9 @@ const Right = () => {
             </Box>
           </Box>
         </Box>
-      </DashboardBox>
+      </DashboardBox> */}
 
-      <DashboardBox>
+      {/* <DashboardBox>
         <Box>
           <span style={{ fontWeight: "bold", fontSize: "20px" }}>
             Additional Services
@@ -513,7 +726,7 @@ const Right = () => {
             </span>
           </Box>
         </Box>
-      </DashboardBox>
+      </DashboardBox> */}
     </Box>
   );
 };

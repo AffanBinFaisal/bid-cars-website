@@ -47,17 +47,29 @@ export const verify = createAsyncThunk(
   }
 );
 
-// Deposit
-// export const deposit = createAsyncThunk(
-//   "user/deposit",
-//   async (params, { rejectWithValue }) => {
-//     try {
-//       return await userService.deposit(params);
-//     } catch (error) {
-//       return rejectWithValue(error.response.data);
-//     }
-//   }
-// );
+// Process Deposit
+export const processDeposit = createAsyncThunk(
+  "user/deposit",
+  async (params, { rejectWithValue }) => {
+    try {
+      return await userService.deposit(params);
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+// Withdraw
+export const withdraw = createAsyncThunk(
+  "user/withdraw",
+  async (params, { rejectWithValue }) => {
+    try {
+      return await userService.withdraw(params);
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 export const userSlice = createSlice({
   name: "auth",
@@ -126,6 +138,42 @@ export const userSlice = createSlice({
       state.loading = false;
       state.userInfo = {};
       state.isAuthenticated = false;
+      state.error = action.payload?.message || action.error.message;
+    });
+
+    // Deposit
+    builder.addCase(processDeposit.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(processDeposit.fulfilled, (state, action) => {
+      state.loading = false;
+      state.userInfo.balance += action.payload.amount;
+      state.error = "";
+      // Update localStorage on the client-side
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      userInfo.balance += action.payload.amount;
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+    });
+    builder.addCase(processDeposit.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload?.message || action.error.message;
+    });
+
+    // Withdraw
+    builder.addCase(withdraw.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(withdraw.fulfilled, (state, action) => {
+      state.loading = false;
+      state.userInfo.balance -= action.payload.amount;
+      state.error = "";
+      // Update localStorage on the client-side
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      userInfo.balance -= action.payload.amount;
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+    });
+    builder.addCase(withdraw.rejected, (state, action) => {
+      state.loading = false;
       state.error = action.payload?.message || action.error.message;
     });
   },

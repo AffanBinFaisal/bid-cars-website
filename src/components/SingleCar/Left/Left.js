@@ -13,7 +13,7 @@ const Left = (props) => {
 
   return (
     <>
-      {props.data.map((carInfo) => (
+      {props.data && (
         <Box display="flex" flexDirection="column" gap="1rem">
           <DashboardBox>
             <Carousel
@@ -24,11 +24,12 @@ const Left = (props) => {
                 width: "100%",
               }}
             >
-              {carInfo.car_photo.photo.map((photo) => (
-                <Carousel.Item>
-                  <img src={photo} alt="First Slide" className="homeImage" />
-                </Carousel.Item>
-              ))}
+              {props.data.car_photo &&
+                props.data.car_photo.photo.map((photo) => (
+                  <Carousel.Item>
+                    <img src={photo} alt="First Slide" className="homeImage" />
+                  </Carousel.Item>
+                ))}
             </Carousel>
           </DashboardBox>
           <DashboardBox>
@@ -57,7 +58,7 @@ const Left = (props) => {
                   }}
                 >
                   <span className="propTitle">Primary damage</span>
-                  <span>{carInfo.primary_damage}</span>
+                  <span>{props.data.primary_damage}</span>
                 </Box>
                 <hr />
                 <Box
@@ -68,7 +69,7 @@ const Left = (props) => {
                   }}
                 >
                   <span className="propTitle">Secondary damage</span>
-                  <span>{carInfo.secondary_damage}</span>
+                  <span>{props.data.secondary_damage}</span>
                 </Box>
                 <hr />
                 <Box
@@ -80,8 +81,8 @@ const Left = (props) => {
                 >
                   <span className="propTitle">Odometer</span>
                   <span>
-                    {`${carInfo.odometer} mi (${Math.round(
-                      carInfo.odometer * 1.609
+                    {`${props.data.odometer} mi (${Math.round(
+                      props.data.odometer * 1.609
                     )} kms)`}
                   </span>
                 </Box>
@@ -94,7 +95,7 @@ const Left = (props) => {
                   }}
                 >
                   <span className="propTitle">Start code</span>
-                  <span>{carInfo.highlights}</span>
+                  <span>{props.data.highlights}</span>
                 </Box>
                 <hr />
                 <Box
@@ -125,7 +126,7 @@ const Left = (props) => {
                   }}
                 >
                   <span className="propTitle">VIN</span>
-                  <span>{carInfo.vin}</span>
+                  <span>{props.data.vin}</span>
                 </Box>
                 <hr />
                 <Box
@@ -136,7 +137,7 @@ const Left = (props) => {
                   }}
                 >
                   <span className="propTitle">Short info</span>
-                  <span>{carInfo.engine_type}</span>
+                  <span>{props.data.engine_type}</span>
                 </Box>
                 <hr />
                 <Box
@@ -147,7 +148,7 @@ const Left = (props) => {
                   }}
                 >
                   <span className="propTitle">Model</span>
-                  <span>{carInfo.model}</span>
+                  <span>{props.data.model}</span>
                 </Box>
                 <hr />
                 <Box
@@ -158,7 +159,7 @@ const Left = (props) => {
                   }}
                 >
                   <span className="propTitle">Body Style</span>
-                  <span>{carInfo.body_style}</span>
+                  <span>{props.data.body_style}</span>
                 </Box>
                 <hr />
                 <Box
@@ -169,7 +170,7 @@ const Left = (props) => {
                   }}
                 >
                   <span className="propTitle">Cylinders</span>
-                  <span>{carInfo.cylinders}</span>
+                  <span>{props.data.cylinders}</span>
                 </Box>
                 <hr />
                 <Box
@@ -180,7 +181,7 @@ const Left = (props) => {
                   }}
                 >
                   <span className="propTitle">Drive</span>
-                  <span>{carInfo.drive}</span>
+                  <span>{props.data.drive}</span>
                 </Box>
                 <hr />
                 <Box
@@ -191,7 +192,7 @@ const Left = (props) => {
                   }}
                 >
                   <span className="propTitle">Transmission</span>
-                  <span>{carInfo.transmission}</span>
+                  <span>{props.data.transmission}</span>
                 </Box>
                 <hr />
                 <Box
@@ -246,7 +247,7 @@ const Left = (props) => {
                 >
                   <Box sx={{ display: "flex", flexDirection: "column" }}>
                     <span className="propTitle">Date</span>
-                    <span>{carInfo.created_at}</span>
+                    <span>{props.data.created_at}</span>
                   </Box>
                   <Box
                     sx={{
@@ -256,7 +257,7 @@ const Left = (props) => {
                     }}
                   >
                     <span className="propTitle">Seller</span>
-                    <span>{carInfo.seller}</span>
+                    <span>{props.data.seller}</span>
                   </Box>
                 </Box>
                 <hr />
@@ -269,7 +270,7 @@ const Left = (props) => {
                 >
                   <Box sx={{ display: "flex", flexDirection: "column" }}>
                     <span className="propTitle">Sale Document</span>
-                    <span>{carInfo.doc_type}</span>
+                    <span>{props.data.doc_type}</span>
                   </Box>
                   <Box
                     sx={{
@@ -309,7 +310,7 @@ const Left = (props) => {
             </Box>
           </DashboardBox>
         </Box>
-      ))}
+      )}
     </>
   );
 };

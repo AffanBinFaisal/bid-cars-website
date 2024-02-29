@@ -8,6 +8,7 @@ import Right from "../components/SingleCar/Right/Right";
 import { useParams } from "react-router";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { HashLoader } from "react-spinners";
 
 const lowerBoxGridTemplateSmallScreen = `
     "main"
@@ -17,11 +18,11 @@ const lowerBoxGridTemplateLargeScreen = `
     "left right"
 `;
 
-
-
 const SingleCar = () => {
-  const userInfo = useSelector((state) => state.login);
+  const { userInfo } = useSelector((state) => state.user);
+  console.log(userInfo);
   const isBelowMediumScreen = useMediaQuery("(max-width: 991px)");
+  const [loading, setLoading] = useState(false);
 
   let gridTemplateAreas, gridTemplateColumns;
 
@@ -34,37 +35,43 @@ const SingleCar = () => {
   }
 
   const { vin } = useParams();
-  console.log(vin);
 
   const [data, setData] = useState([]);
 
   const fetchData = async () => {
     try {
+      setLoading(true);
+      console.log("data fetching");
       const response = await fetch(`http://localhost:8001/cars/vin/${vin}`);
       const data = await response.json();
-      setData(data.result);
+      console.log(data.result[0]);
+      setData(data.result[0]);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching makes:", error);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [vin]);
+
+  // console.log(data);
 
   const buyNow = async () => {
-    console.log(data[2].buy_now_car.purchase_price,); 
+    // console.log(data[2].buy_now_car.purchase_price);
     try {
       const config = {
         headers: {
           "content-type": "application/json",
-          Authorization: userInfo.user.token,
+          Authorization: userInfo.token,
         },
       };
       const response = await axios.post(
         "http://localhost:8001/purchase/buy-now",
         {
-          amount: data[2].buy_now_car.purchase_price,
+          amount: data ? data[2].buy_now_car.purchase_price : null,
           vehicle: vin,
         },
         config
@@ -87,20 +94,34 @@ const SingleCar = () => {
         flexDirection="column"
         gap="1rem"
       >
-        <Top data={data} />
-        <Below data={data} />
-        <Box
-          display="grid"
-          gap="1rem"
-          sx={{
-            gridTemplateAreas: gridTemplateAreas,
-            gridTemplateColumns: gridTemplateColumns,
-          }}
-          className="filters"
-        >
-          <Left data={data} />
-          <Right data={data} />
-        </Box>
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <HashLoader color="#7a63f1" size={50} />
+          </Box>
+        ) : (
+          <>
+            <Top data={data} />
+            <Below data={data} />
+            <Box
+              display="grid"
+              gap="1rem"
+              sx={{
+                gridTemplateAreas: gridTemplateAreas,
+                gridTemplateColumns: gridTemplateColumns,
+              }}
+              className="filters"
+            >
+              <Left data={data} />
+              <Right data={data} />
+            </Box>
+          </>
+        )}
       </Box>
       <button onClick={buyNow}>Buy Now</button>
     </div>

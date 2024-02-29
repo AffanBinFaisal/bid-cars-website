@@ -41,28 +41,36 @@ const verify = async (params) => {
   return response.data;
 };
 
-// const deposit = async (params) => {
-//   const config = {
-//     headers: {
-//       "content-type": "application/json",
-//       Authorization: params.token,
-//     },
-//   };
-//   const response = await axios.post(
-//     "http://localhost:8001/payments/deposit",
-//     {
-//       amount: params.amount,
-//       description: "Depositing Money",
-//     },
-//     config
-//   );
-//   return response.data.sessionUrl;
-// };
+const deposit = async (params) => {
+  const response = await axios.get("http://localhost:8001/payments/success", {
+    params,
+  });
+  return response.data;
+};
+
+const withdraw = async (body) => {
+  const config = {
+    headers: {
+      "content-type": "application/json",
+      Authorization: body.token,
+    },
+  };
+  const response = await axios.post(
+    "http://localhost:8001/payments/withdraw",
+    {
+      amount: body.amount,
+    },
+    config
+  );
+  return response.data;
+};
 
 const authService = {
   login,
   register,
   verify,
+  deposit,
+  withdraw,
 };
 
 export default authService;

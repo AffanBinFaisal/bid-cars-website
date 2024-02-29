@@ -5,11 +5,14 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
 import "./Left.css";
-import { Link } from "react-router-dom";
 
 const Left = () => {
   const [activePage, setActivePage] = useState("watchlist");
+  const [activeSection, setActiveSection] = useState("");
 
   const handleButtonClick = (page) => {
     setActivePage(page);
@@ -138,17 +141,56 @@ const Left = () => {
               <span className="secTitle">Bids</span>
             </AccordionSummary>
             <AccordionDetails>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                }}
+              <List
+                sx={{ width: "100%" }}
+                component="nav"
+                aria-labelledby="nested-list-subheader"
               >
-                <Link>Current Bids</Link>
-                <Link>Won Bids</Link>
-                <Link>Lost Bids</Link>
-              </Box>
+                <ListItemButton
+                  onClick={() => setActiveSection("Current Bids")}
+                  sx={{
+                    backgroundColor:
+                      activeSection === "Current Bids"
+                        ? "#7a63f1"
+                        : "transparent",
+                    color: activeSection === "Current Bids" ? "white" : "black",
+                    borderRadius: "10px",
+                    "&:hover": {
+                      color: "black",
+                    },
+                  }}
+                >
+                  <ListItemText primary="Current Bids" />
+                </ListItemButton>
+                <ListItemButton
+                  onClick={() => setActiveSection("Won Bids")}
+                  sx={{
+                    backgroundColor:
+                      activeSection === "Won Bids" ? "#7a63f1" : "transparent",
+                    color: activeSection === "Won Bids" ? "white" : "black",
+                    borderRadius: "10px",
+                    "&:hover": {
+                      color: "black",
+                    },
+                  }}
+                >
+                  <ListItemText primary="Won Bids" />
+                </ListItemButton>
+                <ListItemButton
+                  onClick={() => setActiveSection("Lost Bids")}
+                  sx={{
+                    backgroundColor:
+                      activeSection === "Lost Bids" ? "#7a63f1" : "transparent",
+                    color: activeSection === "Lost Bids" ? "white" : "black",
+                    borderRadius: "10px",
+                    "&:hover": {
+                      color: "black",
+                    },
+                  }}
+                >
+                  <ListItemText primary="Lost Bids" />
+                </ListItemButton>
+              </List>
             </AccordionDetails>
           </Accordion>
           <hr />
